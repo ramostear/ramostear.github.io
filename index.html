@@ -11,22 +11,22 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="format-detection" content="telephone=no" />
-<meta name="author" content="RAMOSTEAR|谭朝红" />
+<meta name="author" content="RAMOSTEAR" />
 
 
     
     
 
 
-<meta name="description" content="致力于云计算SaaS软件开发和大数据分析应用">
+<meta name="description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Ramostear">
 <meta property="og:url" content="http://blog.ramostear.com/index.html">
 <meta property="og:site_name" content="Ramostear">
-<meta property="og:description" content="致力于云计算SaaS软件开发和大数据分析应用">
+<meta property="og:description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Ramostear">
-<meta name="twitter:description" content="致力于云计算SaaS软件开发和大数据分析应用">
+<meta name="twitter:description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -76,7 +76,7 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: undefined
+        search: true
     }
 </script>
 
@@ -103,13 +103,20 @@
             <img src="/img/avatar.png" class="animated zoomIn">
         </a>
         <hgroup>
-          <h1 class="header-author"><a href="/">RAMOSTEAR|谭朝红</a></h1>
+          <h1 class="header-author"><a href="/">RAMOSTEAR</a></h1>
         </hgroup>
 
         
-        <p class="header-subtitle">谭朝红的博客</p>
+        <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
         
 
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
         
 
 
@@ -174,9 +181,9 @@
                     <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" href="mailto:ramostear@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
+                                <a class="fa GitHub" href="https://github.com/ramostear" title="GitHub"></a>
                             
                                 <a class="fa RSS" href="/atom.xml" title="RSS"></a>
                             
@@ -210,7 +217,7 @@
                 
                 <section class="switch-part switch-part4">
                 
-                    <div id="js-aboutme">专注于前端</div>
+                    <div id="js-aboutme">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</div>
                 </section>
                 
             </div>
@@ -222,7 +229,7 @@
       <nav id="mobile-nav">
       <div class="overlay">
           <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">RAMOSTEAR|谭朝红</a></h1>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
       </div>
     <div class="intrude-less">
         <header id="header" class="inner">
@@ -230,10 +237,10 @@
                 <img src="/img/avatar.png" class="animated zoomIn">
             </a>
             <hgroup>
-              <h1 class="header-author"><a href="/" title="回到主页">RAMOSTEAR|谭朝红</a></h1>
+              <h1 class="header-author"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
             </hgroup>
             
-            <p class="header-subtitle">谭朝红的博客</p>
+            <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
             
             <nav class="header-menu">
                 <ul>
@@ -252,9 +259,9 @@
             <nav class="header-nav">
                         <ul class="social">
                             
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
+                                <a class="fa Email" target="_blank" href="mailto:ramostear@163.com" title="Email"></a>
                             
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
+                                <a class="fa GitHub" target="_blank" href="https://github.com/ramostear" title="GitHub"></a>
                             
                                 <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
                             
@@ -273,6 +280,15 @@
       <time datetime="2016-10-29T18:10:27.000Z" itemprop="datePublished">2016-10-30</time>
 </a>
 
+ 
+    <a href="/2016/10/30/双栏Blog主题使用/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+            <span class="ds-thread-count"  data-thread-key="2016/10/30/双栏Blog主题使用/" ></span>
+        
+        
+    </a>
 
     </div>
   
@@ -344,6 +360,15 @@
       <time datetime="2016-10-29T16:00:00.000Z" itemprop="datePublished">2016-10-30</time>
 </a>
 
+ 
+    <a href="/2016/10/30/hello-world/#comments" title="查看评论">
+        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <span class="count-comment"></span>
+        
+            <span class="ds-thread-count"  data-thread-key="2016/10/30/hello-world/" ></span>
+        
+        
+    </a>
 
     </div>
   
@@ -413,11 +438,8 @@
     <div class="outer">
         <div id="footer-info">
             <div class="footer-left">
-                <i class="fa fa-copyright"></i> 
-                2016 RAMOSTEAR|谭朝红
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <i class="fa fa-copyright"></i>
+                2016 RAMOSTEAR
             </div>
         </div>
         
@@ -441,6 +463,7 @@
         
     </div>
 </footer>
+
     </div>
     
 <script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
@@ -462,6 +485,31 @@
     </script>
 
 
+    
+        <script>
+            if ($(".left-col").is(":visible")) {
+                var duoshuoQuery = {short_name:"blogramostear"};
+                (function() {
+                    var d = document, s = d.createElement('script');
+                    s.src = 'http://static.duoshuo.com/embed.js';
+                    s.async = true; s.charset = 'UTF-8';
+                    (d.head || d.body).appendChild(s);
+                })();
+
+                $(document).ready(function(){
+                    var $duoshuoCount = $(".ds-thread-count");
+                    $duoshuoCount.bind("DOMNodeInserted", function(e) {
+                        var num = $(this).text().replace(/[^0-9]/ig,"");
+                        $(this).siblings(".count-comment").text(num);
+                        $(this).remove();
+                    })
+                })
+            }
+        </script>
+    
+
+     
+
 
 
 
@@ -477,9 +525,9 @@
             
             
             
-            
-            
-            
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+             articleNav: "#article-nav a, #post-nav-button a", 
              archives: ".archive-article-title", 
              miniArchives: "a.post-list-link", 
             
@@ -491,6 +539,23 @@
         }
     
 </script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
 
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
