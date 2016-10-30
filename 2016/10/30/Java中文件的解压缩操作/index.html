@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="RAMOSTEAR" />
+
+
+
+<meta name="description" content="Java中的内容比较繁多，文件操作是一个很重要的部分，涉及到一些列的I/O流的操作，现在把其中的文件解压缩的写法分享一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中文件的解压缩操作">
+<meta property="og:url" content="http://blog.ramostear.com/2016/10/30/Java中文件的解压缩操作/index.html">
+<meta property="og:site_name" content="Ramostear">
+<meta property="og:description" content="Java中的内容比较繁多，文件操作是一个很重要的部分，涉及到一些列的I/O流的操作，现在把其中的文件解压缩的写法分享一下。">
+<meta property="og:updated_time" content="2016-10-30T14:17:04.359Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java中文件的解压缩操作">
+<meta name="twitter:description" content="Java中的内容比较繁多，文件操作是一个很重要的部分，涉及到一些列的I/O流的操作，现在把其中的文件解压缩的写法分享一下。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ramostear" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>Java中文件的解压缩操作 | Ramostear</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">RAMOSTEAR</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo主题/">Hexo主题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ant/">ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件压缩/">文件压缩</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Java中文件的解压缩操作" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/30/Java中文件的解压缩操作/" class="article-date">
+      <time datetime="2016-10-30T13:45:19.000Z" itemprop="datePublished">2016-10-30</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java中文件的解压缩操作
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a><a class="article-category-link" href="/categories/Java/I-O/">I/O</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ant/">ant</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/文件压缩/">文件压缩</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="1、基于ant-jar的文件操作"><a href="#1、基于ant-jar的文件操作" class="headerlink" title="1、基于ant.jar的文件操作"></a>1、基于<strong>ant.jar</strong>的文件操作</h1><h2 id="1-1-解压压缩文件"><a href="#1-1-解压压缩文件" class="headerlink" title="1-1 解压压缩文件"></a>1-1 解压压缩文件</h2><p>这里使用<strong>ant.jar</strong>来进行文件的操作，文件的压缩格式为.<strong>ZIP</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">	 * 解压缩文件</div><div class="line">	 * @param zipFileName	压缩文件名</div><div class="line">	 * @param unzipDir		解压缩文件路径</div><div class="line">	 * @throws IOException </div><div class="line">	 */</div><div class="line">	public static void unZipFile(String zipfile,String destDir) throws IOException&#123;</div><div class="line">		destDir = destDir.endsWith(&quot;\\&quot;)?destDir:destDir+&quot;\\&quot;;</div><div class="line">		byte[] b = new byte[1024];</div><div class="line">		int length;</div><div class="line">		ZipFile zipFile;</div><div class="line">		zipFile = new ZipFile(new File(zipfile));</div><div class="line">		@SuppressWarnings(&quot;rawtypes&quot;)</div><div class="line">		Enumeration enumeration = zipFile.getEntries();</div><div class="line">		ZipEntry zipEntry = null;</div><div class="line">		while(enumeration.hasMoreElements())&#123;</div><div class="line">			zipEntry = (ZipEntry) enumeration.nextElement();</div><div class="line">			File loadFile = new File(destDir+zipEntry.getName());</div><div class="line">			if(zipEntry.isDirectory())&#123;</div><div class="line">				loadFile.mkdirs();</div><div class="line">			&#125;else&#123;</div><div class="line">				if(!loadFile.getParentFile().exists())&#123;</div><div class="line">					loadFile.getParentFile().mkdirs();</div><div class="line">				&#125;</div><div class="line">				OutputStream outputStream = new FileOutputStream(loadFile);</div><div class="line">				</div><div class="line">				InputStream inputStream = zipFile.getInputStream(zipEntry);</div><div class="line">				while((length=inputStream.read(b))&gt;0)&#123;</div><div class="line">					outputStream.write(b, 0, length);</div><div class="line">					</div><div class="line">				&#125;</div><div class="line">				if(outputStream!=null)&#123;</div><div class="line">					outputStream.close();</div><div class="line">					outputStream = null;</div><div class="line">				&#125;</div><div class="line">				if(inputStream!=null)&#123;</div><div class="line">					inputStream.close();</div><div class="line">					inputStream = null;</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">			</div><div class="line">		&#125;</div><div class="line">		zipFile.close();</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
+<p>使用结束后需要把打开的所有<code>I/O</code>流关闭，否则会造成JVM占用该文件，从而不能够删除所操作的文件，需要重新启动计算机或者服务器才能够进行修改和删除操作。重点需要关注的是<code>ZipFile</code>流是否正常关闭。</p>
+<h2 id="1-2-删除文件"><a href="#1-2-删除文件" class="headerlink" title="1-2 删除文件"></a>1-2 删除文件</h2><p>删除某个文件夹下的所有文件，使用递归删除的方式，从文件夹最里面的文件开始进行删除，首先判断当前文件夹下是否有文件存在，如果没有，直接删除该文件夹，如果有文件存在，这获取该文件夹下的所有文件，递归依次进行文件的删除，最后还需要删除最外层的文件夹。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line">	 * 删除指定文件夹，如果文件夹里面存在文件夹，就递归进行删除，删除的规则是从里面开始进行删除</div><div class="line">	 * @param folderPath		指定要删除的文件夹路径</div><div class="line">	 */</div><div class="line">	public static void deleteFolders(String folderPath)&#123;</div><div class="line">		File file = new File(folderPath);</div><div class="line">		if(file.isFile() || file.list().length == 0 )&#123;</div><div class="line">			file.delete();</div><div class="line">		&#125;else&#123;</div><div class="line">			File[] files = file.listFiles();</div><div class="line">			for(File f:files)&#123;</div><div class="line">				System.out.println(&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;删除文件：&quot;+f.getPath()+&quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot;);</div><div class="line">				deleteFolders(f.getPath());</div><div class="line">				f.delete();</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		System.out.println(&quot;删除最后的文件夹：&gt;&gt;&gt;&gt;&gt;&gt;&quot;+file.getPath()+&quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot;);</div><div class="line">		deleteFile(file.getPath());</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	/**</div><div class="line">	 * 根据提供的文件路径进行文件的删除，这里删除的是单个文件，不带文件夹的</div><div class="line">	 * @param filePath		文件的存放路径</div><div class="line">	 */</div><div class="line">	public static void deleteFile(String filePath)&#123;</div><div class="line">		System.out.println(&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;删除&quot;+filePath+&quot;文件&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot;);</div><div class="line">		File file = new File(filePath);</div><div class="line">		if(file.exists())&#123;</div><div class="line">			System.out.println(&quot;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;删除&quot;+file.getPath()+&quot; 文件夹&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot;);</div><div class="line">			file.delete();</div><div class="line">		&#125;</div><div class="line">	&#125;</div></pre></td></tr></table></figure></p>
+<h1 id="2、验证码生成器"><a href="#2、验证码生成器" class="headerlink" title="2、验证码生成器"></a>2、验证码生成器</h1><p>验证码在开发web站点的时候已经是一个必不可少的东西，通过验证码机制，可以防止网站被恶意的提交请求，现在分享一下基于Java编写的二维码生成器。</p>
+<h2 id="2-1-生成二维码"><a href="#2-1-生成二维码" class="headerlink" title="2-1 生成二维码"></a>2-1 生成二维码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div></pre></td><td class="code"><pre><div class="line">import java.awt.Color;</div><div class="line">import java.awt.Font;</div><div class="line">import java.awt.Graphics2D;</div><div class="line">import java.awt.Transparency;</div><div class="line">import java.awt.image.BufferedImage;</div><div class="line">import java.util.Random;</div><div class="line">/**</div><div class="line"> * </div><div class="line"> * Class Name : Captcha &lt;br/&gt;</div><div class="line"> * Function :TODO ADD FUNCTION. &lt;br/&gt;</div><div class="line"> * Reason: TODO ADD REASON(可选) . &lt;br/&gt;</div><div class="line"> * Date : 2016年5月19日上午2:47:01. &lt;br/&gt;</div><div class="line"> * </div><div class="line"> * @author  谭朝红   @QQ 897380344 . &lt;br/&gt;</div><div class="line"> * @email   ramostear@seelecloud.cn .&lt;br/&gt;</div><div class="line"> * @version 100-000-000 .&lt;br/&gt; </div><div class="line"> * @since   JDK 1.6	&lt;br/&gt;</div><div class="line"> * @company 塞拉科技|seelecloud &lt;br/&gt;</div><div class="line"> * Copyright (c) 2016,seelecloud.com All Rights Reserved &lt;br/&gt;</div><div class="line"> */</div><div class="line">public class Captcha &#123;</div><div class="line">	private int width;</div><div class="line">	private int height;</div><div class="line">	private int num;</div><div class="line">	private String code;</div><div class="line">	private static final Random ran = new Random();</div><div class="line">	private static Captcha captcha;</div><div class="line">	private Captcha()&#123;</div><div class="line">		code = &quot;1234567890abcdefghijklmnopqrstuvwxyz&quot;;</div><div class="line">		num = 4;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public static Captcha getInstance() &#123;</div><div class="line">		if(captcha==null) captcha = new Captcha();</div><div class="line">		return captcha;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public void set(int width,int height,int num,String code) &#123;</div><div class="line">		this.width = width;</div><div class="line">		this.height = height;</div><div class="line">		this.setNum(num);</div><div class="line">		this.setCode(code);</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public void set(int width,int height) &#123;</div><div class="line">		this.width = width;</div><div class="line">		this.height = height;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public int getWidth() &#123;</div><div class="line">		return width;</div><div class="line">	&#125;</div><div class="line">	public void setWidth(int width) &#123;</div><div class="line">		this.width = width;</div><div class="line">	&#125;</div><div class="line">	public int getHeight() &#123;</div><div class="line">		return height;</div><div class="line">	&#125;</div><div class="line">	public void setHeight(int height) &#123;</div><div class="line">		this.height = height;</div><div class="line">	&#125;</div><div class="line">	public int getNum() &#123;</div><div class="line">		return num;</div><div class="line">	&#125;</div><div class="line">	public void setNum(int num) &#123;</div><div class="line">		this.num = num;</div><div class="line">	&#125;</div><div class="line">	public String getCode() &#123;</div><div class="line">		return code;</div><div class="line">	&#125;</div><div class="line">	public void setCode(String code) &#123;</div><div class="line">		this.code = code;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public String generateCheckcode() &#123;</div><div class="line">		StringBuffer cc = new StringBuffer();</div><div class="line">		for(int i=0;i&lt;num;i++) &#123;</div><div class="line">			cc.append(code.charAt(ran.nextInt(code.length())));</div><div class="line">		&#125;</div><div class="line">		return cc.toString();</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	public BufferedImage generateCheckImg(String checkcode) &#123;</div><div class="line">		//创建一个图片对象</div><div class="line">		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);</div><div class="line">		//获取图片对象的画笔</div><div class="line">		Graphics2D graphic = img.createGraphics();</div><div class="line">		img = graphic.getDeviceConfiguration().createCompatibleImage(width, height,Transparency.TRANSLUCENT);</div><div class="line">		graphic.dispose();</div><div class="line">		graphic = img.createGraphics();</div><div class="line">		//graphic.setColor(Color.WHITE);</div><div class="line">		//graphic.fillRect(0, 0, width, height);</div><div class="line">		//graphic.setColor(Color.BLACK);</div><div class="line">		//graphic.drawRect(0, 0, width-1, height-1);</div><div class="line">		Font font = new Font(&quot;宋体&quot;,Font.BOLD+Font.ITALIC,(int)(height*0.8));</div><div class="line">		graphic.setFont(font);</div><div class="line">		for(int i=0;i&lt;num;i++) &#123;</div><div class="line">			graphic.setColor(new Color(ran.nextInt(255),ran.nextInt(255),ran.nextInt(255)));</div><div class="line">			graphic.drawString(String.valueOf(checkcode.charAt(i)), i*(width/num)+4, (int)(height*0.7));</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		//加一些点</div><div class="line">		for(int i=0;i&lt;(width+height);i++) &#123;</div><div class="line">			graphic.setColor(new Color(ran.nextInt(255),ran.nextInt(255),ran.nextInt(255)));</div><div class="line">			graphic.drawOval(ran.nextInt(width), ran.nextInt(height), 1, 1);</div><div class="line">		&#125;</div><div class="line">		</div><div class="line">		//加一些线</div><div class="line">		for(int i=0;i&lt;2;i++) &#123;</div><div class="line">			graphic.setColor(new Color(ran.nextInt(255),ran.nextInt(255),ran.nextInt(255)));</div><div class="line">			graphic.drawLine(0, ran.nextInt(height), width, ran.nextInt(height));</div><div class="line">		&#125;</div><div class="line">		return img;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以在此基础上进行相应的修改，以适合自己的需求。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/30/Java中文件的解压缩操作/">Java中文件的解压缩操作</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">RAMOSTEAR</a></p>
+        <p><span>发布时间:</span>2016-10-30, 21:45:19</p>
+        <p><span>最后更新:</span>2016-10-30, 22:17:04</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/30/Java中文件的解压缩操作/" title="Java中文件的解压缩操作">http://blog.ramostear.com/2016/10/30/Java中文件的解压缩操作/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/10/30/Java中文件的解压缩操作/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/30/Hexo-Github搭建个人博客/">
+                    Hexo+Github搭建个人博客
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1、基于ant-jar的文件操作"><span class="toc-number">1.</span> <span class="toc-text">1、基于ant.jar的文件操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-解压压缩文件"><span class="toc-number">1.1.</span> <span class="toc-text">1-1 解压压缩文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-2-删除文件"><span class="toc-number">1.2.</span> <span class="toc-text">1-2 删除文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2、验证码生成器"><span class="toc-number">2.</span> <span class="toc-text">2、验证码生成器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-生成二维码"><span class="toc-number">2.1.</span> <span class="toc-text">2-1 生成二维码</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"Java中文件的解压缩操作　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/10/30/Java中文件的解压缩操作/" data-title="Java中文件的解压缩操作" data-url="http://blog.ramostear.com/2016/10/30/Java中文件的解压缩操作/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"blogramostear"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/30/Hexo-Github搭建个人博客/" title="下一篇: Hexo+Github搭建个人博客">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Java中文件的解压缩操作/">Java中文件的解压缩操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Hexo-Github搭建个人博客/">Hexo+Github搭建个人博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/双栏Blog主题使用/">双栏Blog主题使用</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2016 RAMOSTEAR
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+             articleNav: "#article-nav a, #post-nav-button a", 
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
