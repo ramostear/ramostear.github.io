@@ -15,16 +15,29 @@
 
 
 
-<meta name="description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="404">
-<meta property="og:url" content="http://blog.ramostear.com/404/index.html">
+<meta name="description" content="权限控制是系统中的一个子模块，它的作用是：规定登陆该系统的用户所能做的操作。当某一用户登录该系统时，首先需要确定该用户是以哪种角色或权限进入该系统的，系统才可以为该用户提供哪些对应的服务。当用户操作某个模块时，即时认证用户的增、删、改、查的操作权限该模块下应该包含三个子模块，分别是：用户管理、角色管理、权限管理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java权限控制模型">
+<meta property="og:url" content="http://blog.ramostear.com/2016/11/01/Java权限控制模型/index.html">
 <meta property="og:site_name" content="Ramostear">
-<meta property="og:description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
-<meta property="og:updated_time" content="2016-10-29T21:30:27.338Z">
+<meta property="og:description" content="权限控制是系统中的一个子模块，它的作用是：规定登陆该系统的用户所能做的操作。当某一用户登录该系统时，首先需要确定该用户是以哪种角色或权限进入该系统的，系统才可以为该用户提供哪些对应的服务。当用户操作某个模块时，即时认证用户的增、删、改、查的操作权限该模块下应该包含三个子模块，分别是：用户管理、角色管理、权限管理">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/1.gif">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%871.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%872.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%875.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%876.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%877.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%878.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%879.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%8710.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%8711.png">
+<meta property="og:updated_time" content="2016-10-31T20:06:47.345Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="404">
-<meta name="twitter:description" content="致力于互联网云计算和物联网技术的研究学习和运用,分享交流JavaEE企业及项目开发经验与技巧，关注最前端的互联网技术，打造私有云服务，公有云服务，混合云服务，用博客的方式，记录自己在云计算创业道路上的一点一滴！">
+<meta name="twitter:title" content="Java权限控制模型">
+<meta name="twitter:description" content="权限控制是系统中的一个子模块，它的作用是：规定登陆该系统的用户所能做的操作。当某一用户登录该系统时，首先需要确定该用户是以哪种角色或权限进入该系统的，系统才可以为该用户提供哪些对应的服务。当用户操作某个模块时，即时认证用户的增、删、改、查的操作权限该模块下应该包含三个子模块，分别是：用户管理、角色管理、权限管理">
+<meta name="twitter:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/1.gif">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -56,7 +69,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>404 | Ramostear</title>
+<title>Java权限控制模型 | Ramostear</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -66,7 +79,7 @@
         fancybox: true,
         animate: true,
         isHome: false,
-        isPost: false,
+        isPost: true,
         isArchive: false,
         isTag: false,
         isCategory: false,
@@ -315,11 +328,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Java权限控制模型" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/404/index.html" class="article-date">
-      <time datetime="2016-10-29T21:30:27.000Z" itemprop="datePublished">2016-10-30</time>
+      <a href="/2016/11/01/Java权限控制模型/" class="article-date">
+      <time datetime="2016-10-31T19:39:27.000Z" itemprop="datePublished">2016-11-01</time>
 </a>
 
 
@@ -334,7 +347,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      404
+      Java权限控制模型
     </h1>
   
 
@@ -342,8 +355,16 @@
       
       <div class="article-info article-info-post">
         
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+    </div>
+
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RBAC/">RBAC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/权限控制/">权限控制</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -351,36 +372,95 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-              <style>
-    .article-meta { display: none; }
-    #container .article .article-title { padding-right: 0; }
-    .article-header {
-        padding: 0;
-        padding-top: 26px;
-        border-left: none;
-        text-align: center;
-    }
-    .article-header:hover { border-left: none; }
-    .article-title { font-size: 1.6em }
-    .article-entry hr { margin: 0;}
-    .article-meta,
-    #container .article-info-post.article-info { display: none;}
-    #container .article .article-title { padding: 0; }
-</style>
+        <center><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/1.gif" title="RBAC"></center>
 
+<p>权限控制是系统中的一个子模块，它的作用是：规定登陆该系统的用户所能做的操作。当某一用户登录该系统时，首先需要确定该用户是以哪种角色或权限进入该系统的，系统才可以为该用户提供哪些对应的服务。当用户操作某个模块时，即时认证用户的增、删、改、查的操作权限该模块下应该包含三个子模块，分别是：<code>用户管理</code>、<code>角色管理</code>、<code>权限管理</code><br><a id="more"></a></p>
+<h1 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h1><h2 id="需求分析"><a href="#需求分析" class="headerlink" title="需求分析:"></a>需求分析:</h2><p>业务概述<br>该模块是系统中的一个子模块，它的作用是：<br>规定登陆该系统的用户所能做的操作。<br>当某一用户登录该系统时，首先需要确定该用户是以哪种角色或权限进入该系统的，<br>系统才可以为该用户提供哪些对应的服务。<br>当用户操作某个模块时，即时认证用户的增、删、改、查的操作权限<br>该模块下应该包含三个子模块，分别是：<br>用户管理、角色管理、权限管理</p>
+<h2 id="涉及到的关键字："><a href="#涉及到的关键字：" class="headerlink" title="涉及到的关键字："></a>涉及到的关键字：</h2><ul>
+<li>A、用户(User)：用来记录用户相关信息, 用户要拥有对某种资源的权限，必须通过角色（Role）去关联</li>
+<li>B、角色(Role) : 角色是使用权限的基本单位，拥有一定数量的权限，通过角色赋予用户权限</li>
+<li>C、权限 : 权限指用户根据角色获得对程序某些功能的操作，例如对文件的读、写、修改和删除功能</li>
+<li><p>D、用户与角色关系一个用户（User）可以隶属于多个角色（Role），一个角色组也可拥有多个用户，用户角色就是用来描述他们之间隶属关系的对象。用户（User）通过角色（Role）关联所拥有对某种资源的权限一般而言：一个用户可以拥有多个角色，一个角色可以授权给多个用户（多对多关系）<br><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%871.png"></p>
+</li>
+<li><p>E、权限与角色的关系<br>一个角色（Role）可以拥有多个权限（Permission），同样一个权限可分配给多个角色<br><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%872.png"></p>
+</li>
+</ul>
+<h2 id="概念设计"><a href="#概念设计" class="headerlink" title="概念设计:"></a>概念设计:</h2><ul>
+<li>A、基于RBAC模型实现权限管理(传统方式) (即:用户只能通过角色关联对应的权限,不能单独给用户赋予权限)RBAC基于角色的访问控制（Role  Base  Access  Controller）角色是一系列权限的集合，目的是隔离用户与权限，方便授权及认证,一般而言：一个用户可以拥有多个角色，一个角色可以授权给多个用户（多对多关系）RBAC认为权限控制实质是who, how,what的问题<br>Who 指权限的拥有者或主体How  指怎么授权和认证What 指需要访问的资源或权限（如: 功能模块和CRUD操作）<br>缺点：只能通过角色赋予权限,不能单独对用户授权, 角色会越来越多，杂乱基于RBAC模型权限控制一种域模型设计:</li>
+</ul>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%873.png"></p>
+<ul>
+<li>B、采用ACL(访问控制列表) 方式的域模型设计<br>  ACL访问控制列表，既可以对角色授权, 也可以对用户授权<br>  通过主体ID和主体标识来区分用户或角色<br>  模块ID标识资源模块<br>  操作权限状态码通过int类型的二进制形式表示操作权限 1有 0 无<br>  <img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%874.png"><br>  综合上述我们采用,  基于RBAC模型,采用ACL方式实现权限控制<br>  ACL方式数据库表设计<br>  <img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%875.png"></li>
+</ul>
+<h2 id="详细设计"><a href="#详细设计" class="headerlink" title="详细设计"></a>详细设计</h2><p>   主要实体类的设计:<br>    SysUser, SysRole,  SysUserRole, SysModule, SysACL<br>     DaoBase提供数据库访问：<br>     Service对象设计<br>     主要有SysUserSservice  SysRoleService  SysModuleService SysAclService<br>     SysAclService提供通过二进制位运算方式（位或与）来授予CRUD权限的操作方法<br>     使用位运算的操作ACL的操作权限状态码，来完成授权<br>     这样权限不仅控制到菜单级别，还控制到具体模块的增删改查的功能级别</p>
+<h3 id="主要功能实现"><a href="#主要功能实现" class="headerlink" title="主要功能实现"></a>主要功能实现</h3><h4 id="1、用户信息管理"><a href="#1、用户信息管理" class="headerlink" title="1、用户信息管理"></a>1、用户信息管理</h4><p>实现功能：显示用户信息, 给用户分配角色<br>显示用户信息<br><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%876.png"></p>
+<p>给用户分配角色<br><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%877.png"></p>
+<p>分配角色思路说明：<br>A、根据用户编号和角色编号到用户角色表中查找记录，如果不存在就向数据库添加记录，否则修改信息。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%878.png"></p>
+<h4 id="2、角色信息管理"><a href="#2、角色信息管理" class="headerlink" title="2、角色信息管理"></a>2、角色信息管理</h4><p>实现给角色授权功能</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%879.png"></p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%8710.png"><br>思路说明：选择角色授权时,先将系统资源菜单表的所有信息加载显示出来, 包含一级和二级</p>
+<p>后面的授权流程(先了解)<br><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-5/%E5%9B%BE%E7%89%8711.png"></p>
 
-          
-        
       
     </div>
     
   </div>
   
     
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/01/Java权限控制模型/">Java权限控制模型</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">RAMOSTEAR</a></p>
+        <p><span>发布时间:</span>2016-11-01, 03:39:27</p>
+        <p><span>最后更新:</span>2016-11-01, 04:06:47</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/01/Java权限控制模型/" title="Java权限控制模型">http://blog.ramostear.com/2016/11/01/Java权限控制模型/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/11/01/Java权限控制模型/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
 
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/01/OSGi入门知识梳理/">
+                    OSGi入门知识梳理
+                </a>
+            </div>
+        
+    </nav>
 
   
 </article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#权限管理"><span class="toc-number">1.</span> <span class="toc-text">权限管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求分析"><span class="toc-number">1.1.</span> <span class="toc-text">需求分析:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#涉及到的关键字："><span class="toc-number">1.2.</span> <span class="toc-text">涉及到的关键字：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#概念设计"><span class="toc-number">1.3.</span> <span class="toc-text">概念设计:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#详细设计"><span class="toc-number">1.4.</span> <span class="toc-text">详细设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主要功能实现"><span class="toc-number">1.4.1.</span> <span class="toc-text">主要功能实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、用户信息管理"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">1、用户信息管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、角色信息管理"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">2、角色信息管理</span></a></li></ol></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
 
 
 
@@ -398,7 +478,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"404　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"Java权限控制模型　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -414,7 +494,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="404/index.html" data-title="404" data-url="http://blog.ramostear.com/404/index.html"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/01/Java权限控制模型/" data-title="Java权限控制模型" data-url="http://blog.ramostear.com/2016/11/01/Java权限控制模型/"></div>
     <script>
         var duoshuoQuery = {short_name:"blogramostear"};
         var loadComment = function(){
@@ -432,6 +512,24 @@
 </div>
     
 
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/01/OSGi入门知识梳理/" title="下一篇: OSGi入门知识梳理">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Java权限控制模型/">Java权限控制模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/OSGi入门知识梳理/">OSGi入门知识梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于OSGi的Virgo环境搭建/">基于OSGi的Virgo环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/maven的安装图文教程/">maven的安装图文教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Maven-最佳实践之No-M2-HOME/">Maven 最佳实践之No M2_HOME</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/安装本地Jar包到Maven仓库/">安装本地Jar包到Maven仓库</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Laypage的java分页技术/">基于Laypage的java分页技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Hibernate3的通用泛型公共DAO/">基于Hibernate3的通用泛型公共DAO</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Java中文件的解压缩操作/">Java中文件的解压缩操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Hexo-Github搭建个人博客/">Hexo+Github搭建个人博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/双栏Blog主题使用/">双栏Blog主题使用</a></li></ul>
 
 
 
