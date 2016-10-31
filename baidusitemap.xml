@@ -4,6 +4,33 @@
 
     
   <url>
+    <loc>http://blog.ramostear.com/2016/11/01/%E5%9F%BA%E4%BA%8EOSGi%E7%9A%84Virgo%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    <lastmod>2016-10-31T19:04:24.964Z</lastmod>
+    <data>
+        <display>
+        <title>基于OSGi的Virgo环境搭建</title>
+        <pubTime>2016-10-31T18:48:25.000Z</pubTime>
+        
+        <tag>OSGi</tag>
+         
+        <tag>Virgo服务器</tag>
+         
+        <tag>动态模块组件</tag>
+         
+         
+           
+             
+              <breadCrumb title="OSGi" url="http://blog.ramostear.com/categories/OSGi/"/>
+          
+             
+              <breadCrumb title="Java" url="http://blog.ramostear.com/categories/OSGi/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.ramostear.com/2016/11/01/maven%E7%9A%84%E5%AE%89%E8%A3%85%E5%9B%BE%E6%96%87%E6%95%99%E7%A8%8B/</loc>
     <lastmod>2016-10-31T18:39:35.308Z</lastmod>
     <data>

@@ -15,20 +15,27 @@
 
 
 
-<meta name="description" content="maven是一款不错的项目构建工具，能够自动的完成项目所需依赖包的导入，项目的构建，测试和打包等操作。">
+<meta name="description" content="OSGi服务平台提供在多种网络设备上无需重启的动态改变构造的功能。为了最小化耦合度和促使这些耦合度可管理，OSGi技术提供一种面向服务的架构，它能使这些组件动态地发现对方">
 <meta property="og:type" content="article">
-<meta property="og:title" content="maven的安装图文教程">
-<meta property="og:url" content="http://blog.ramostear.com/2016/11/01/maven的安装图文教程/index.html">
+<meta property="og:title" content="基于OSGi的Virgo环境搭建">
+<meta property="og:url" content="http://blog.ramostear.com/2016/11/01/基于OSGi的Virgo环境搭建/index.html">
 <meta property="og:site_name" content="Ramostear">
-<meta property="og:description" content="maven是一款不错的项目构建工具，能够自动的完成项目所需依赖包的导入，项目的构建，测试和打包等操作。">
-<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/1.png">
-<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/3.png">
-<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/2.png">
-<meta property="og:updated_time" content="2016-10-31T18:39:35.308Z">
+<meta property="og:description" content="OSGi服务平台提供在多种网络设备上无需重启的动态改变构造的功能。为了最小化耦合度和促使这些耦合度可管理，OSGi技术提供一种面向服务的架构，它能使这些组件动态地发现对方">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%871.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%875.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%876.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%877.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%878.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%879.png">
+<meta property="og:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%8710.png">
+<meta property="og:updated_time" content="2016-10-31T19:04:24.964Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="maven的安装图文教程">
-<meta name="twitter:description" content="maven是一款不错的项目构建工具，能够自动的完成项目所需依赖包的导入，项目的构建，测试和打包等操作。">
-<meta name="twitter:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/1.png">
+<meta name="twitter:title" content="基于OSGi的Virgo环境搭建">
+<meta name="twitter:description" content="OSGi服务平台提供在多种网络设备上无需重启的动态改变构造的功能。为了最小化耦合度和促使这些耦合度可管理，OSGi技术提供一种面向服务的架构，它能使这些组件动态地发现对方">
+<meta name="twitter:image" content="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%871.png">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -60,7 +67,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>maven的安装图文教程 | Ramostear</title>
+<title>基于OSGi的Virgo环境搭建 | Ramostear</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -319,11 +326,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-maven的安装图文教程" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-基于OSGi的Virgo环境搭建" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/11/01/maven的安装图文教程/" class="article-date">
-      <time datetime="2016-10-31T18:25:27.000Z" itemprop="datePublished">2016-11-01</time>
+      <a href="/2016/11/01/基于OSGi的Virgo环境搭建/" class="article-date">
+      <time datetime="2016-10-31T18:48:25.000Z" itemprop="datePublished">2016-11-01</time>
 </a>
 
 
@@ -338,7 +345,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      maven的安装图文教程
+      基于OSGi的Virgo环境搭建
     </h1>
   
 
@@ -347,13 +354,13 @@
       <div class="article-info article-info-post">
         
     <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/maven/">maven</a>
+    <a class="article-category-link" href="/categories/OSGi/">OSGi</a><a class="article-category-link" href="/categories/OSGi/Java/">Java</a>
     </div>
 
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/图文教程/">图文教程</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安装/">安装</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OSGi/">OSGi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Virgo服务器/">Virgo服务器</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动态模块组件/">动态模块组件</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -363,24 +370,37 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <ol>
-<li><p>检查JDK安装情况（jdk 1.6 版本以上）<br>在控制台输入：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo %java_home%</div><div class="line">java -version</div></pre></td></tr></table></figure>
-</li>
-<li><p>对apache-maven-3.0.5-bin.zip进行解压缩，例如解压到如下目录(解压目录不要有中文字，不要有空格)：<br><code>D:\javaenv\apache-maven-3.0.5</code></p>
-</li>
-<li><p>设置系统环境变量，M2_HOME</p>
-</li>
-</ol>
-<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/1.png" alt="环境变量"></p>
-<ol>
-<li>设置环境变量Path，将%M2_HOME%\bin加入Path中，一定要注意要用分号；与其他值隔开</li>
-</ol>
-<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/3.png" alt="配置path"></p>
-<ol>
-<li>验证安装是否成功，打开cmd窗口，敲入mvn –v 查看</li>
-</ol>
-<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-2/2.png" alt="验证安装是否成功"></p>
+        <h1 id="OSGi简介"><a href="#OSGi简介" class="headerlink" title="OSGi简介"></a>OSGi简介</h1><p>OSGi服务平台提供在多种网络设备上无需重启的动态改变构造的功能。为了最小化耦合度和促使这些耦合度可管理，OSGi技术提供一种面向服务的架构，它能使这些组件动态地发现对方。</p>
+<h1 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h1><p>由于公司项目的关系，需要将原有的web项目模块化，实现模块的热插拔，动态扩展等特性，因此开始着手学习和研究如何将OSGi引入到现有的web项目当中。兵家道：“大军未动，粮草先行”，在学习使用任何一门技术之前，首先需要解决开发工具和开发环境的问题，下面就接项目开发的机会，为大家介绍一下基于OSGi的Virgo环境的搭建。</p>
+<h1 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h1><p>本文中所涉及到的STS(Spring Tool Suite)、OSGi、VTS (Virgo Tomcat Server)、Maven、Bundle、热插拔，动态引用等概念，有兴趣的朋友可以自行了解，本文就不过多的累赘。</p>
+<h1 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h1><h2 id="STS的下载和安装"><a href="#STS的下载和安装" class="headerlink" title="STS的下载和安装"></a>STS的下载和安装</h2><p>访问Spring的官网进行开发工具的下载，下载地址为<a href="http://spring.io/tools/sts/all，根据自己电脑的操作系统，下载相应平台的最新版STS，下载解压即可，在解压时，没有必要全部的文件都解压出来，只需要把名为sts-x.x.x.RELEASE的文件夹解压出来即可，建议解压在根目录下，笔者多次的经验发现，如果目录过深，后面会导致找不到文件的异常。" target="_blank" rel="external">http://spring.io/tools/sts/all，根据自己电脑的操作系统，下载相应平台的最新版STS，下载解压即可，在解压时，没有必要全部的文件都解压出来，只需要把名为sts-x.x.x.RELEASE的文件夹解压出来即可，建议解压在根目录下，笔者多次的经验发现，如果目录过深，后面会导致找不到文件的异常。</a></p>
+<h2 id="Virgo-Server-的下载和安装"><a href="#Virgo-Server-的下载和安装" class="headerlink" title="Virgo Server 的下载和安装"></a>Virgo Server 的下载和安装</h2><p>访问Eclipse官网进行下载，下载地址为<a href="http://www.eclipse.org/virgo/download/，截止到笔者撰文时的版本号是3.6.4.RELEASE，这里选择Virgo" target="_blank" rel="external">http://www.eclipse.org/virgo/download/，截止到笔者撰文时的版本号是3.6.4.RELEASE，这里选择Virgo</a> Server for Apache Tomcat 版本，点击下载，在本地解压即可。</p>
+<h2 id="在STS中配置Virgo插件"><a href="#在STS中配置Virgo插件" class="headerlink" title="在STS中配置Virgo插件"></a>在STS中配置Virgo插件</h2><p>通过STS在线安装的方式安装Virgo的插件，依次找到Help&gt;Install New Software,点击“Add…”按钮新增地址，在地址栏输入<a href="http://download.eclipse.org/virgo/milestone/tooling" target="_blank" rel="external">http://download.eclipse.org/virgo/milestone/tooling</a> ，确认，等待加载，加载完成后如下图所示</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%871.png" alt="配置virgo插件"></p>
+<p>勾选“Eclipse Virgo Tools”选项，点击Next下一步进行安装，安装完成后重新启动STS。</p>
+<h2 id="配置Virgo"><a href="#配置Virgo" class="headerlink" title="配置Virgo"></a>配置Virgo</h2><p>打开STS的Server配置页面，找到Server选项下的Runtime Environments ,选择Virgo Runtime 。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%873.png" alt=""><br>点击添加按钮，在弹出的对话框中，选择EclipseRT下的Virgo Runtime选项，并勾选上Create a new local server 选择框，点击Next下一步。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%873.png" alt=""></p>
+<p>在接下来的面板中，填写服务器的Name,服务器的位置Server installation directory，（这里填写的是之前下载解压后的VTS所在路径），以上步骤确认完成后，点击Finish 完成配置。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%874.png" alt=""><br>保存退出配置后，在STS的Server面板中会显示刚才配置好的Virgo Server的信息。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%875.png" alt=""></p>
+<h2 id="Maven的配置"><a href="#Maven的配置" class="headerlink" title="Maven的配置"></a>Maven的配置</h2><p>Maven的配置在这里就简单的叙述一下，相信各位朋友已经很熟练了，在此就默认大家都能配置Maven的环境，如果有不清楚的朋友可以上百度或者Google去查阅一下相关的配置信息，或者到Maven的官网获取相关的资源。这里唯一要提出来的是，在安装和配置Maven的过程中，最好自己新建一个本地的Maven仓库，修改全局配置文件里面的仓库地址，Maven的中央仓库访问速度过慢，影响开发，最好选择一下国内速度较好的第三方仓库，尽量不要使用默认的配置。</p>
+<h3 id="检查JDK的版本"><a href="#检查JDK的版本" class="headerlink" title="检查JDK的版本"></a>检查JDK的版本</h3><p>最新版的Maven要求JDK的版本必须在1.6以上，为了保险起见，建议将JDK的版本升级到1.6以上的版本，不包含1.6。在命令行下输入java -version即可查看当前JDK的版本。</p>
+<h3 id="安装maven"><a href="#安装maven" class="headerlink" title="安装maven"></a>安装maven</h3><p>解压下载后的Maven压缩文件，建议解压到根目录下，如果要自定义解压目录，目录中最好不要有中文和空格，如：D:\MyCloud\apache-maven-3.3.9。</p>
+<h3 id="配置系统环境变量"><a href="#配置系统环境变量" class="headerlink" title="配置系统环境变量"></a>配置系统环境变量</h3><p>将Maven加入到环境变量中，变量名自定义，如我的M2_HOME。值得注意的是，在很多教程中习惯吧环境变量的名称定义为MAVEN_HOME，这在新版本的Maven中会报一个-Dmaven.multiModuleProjectDirectory system property is not set. Check $M2_HOME异常，因此在这里把环境变量名配置为M2_HOME,如图所示</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%876.png" alt=""></p>
+<h3 id="设置系统变量Path"><a href="#设置系统变量Path" class="headerlink" title="设置系统变量Path"></a>设置系统变量Path</h3><p>将%M2_HOME%\bin加入到Path中，注意在加入的时候别忘记在前面用“；”与其他的值隔开。</p>
+<h3 id="验证Maven是否安装成功"><a href="#验证Maven是否安装成功" class="headerlink" title="验证Maven是否安装成功"></a>验证Maven是否安装成功</h3><p>在cmd控制台窗口中，输入mvn -v查看相关信息，如图所示</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%877.png" alt=""><br>至此，Maven安装配置工作完成。</p>
+<h2 id="启动VTS"><a href="#启动VTS" class="headerlink" title="启动VTS"></a>启动VTS</h2><p>在STS中点击Server下的Virgo Server 启动按钮，等待OSGi的各个插件加载完毕。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%878.png" alt=""><br>最后在浏览器地址栏输入<a href="http://localhost:8080,进入Virgo" target="_blank" rel="external">http://localhost:8080,进入Virgo</a> Server的默认启动页面。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%879.png" alt=""><br>这里有些朋友可能无法启动或者得不到这个界面，首先检查一下你的机器上有无其他服务器在启动，把其他服务器的端口修改一下，Virgo Server的默认端口是8080。</p>
+<h2 id="进入VTS控制台"><a href="#进入VTS控制台" class="headerlink" title="进入VTS控制台"></a>进入VTS控制台</h2><p>点击右上角的Admin Console,在登录窗口中输入登录口令，默认的登录名和密码是admin和springsource,登录进入控制台主页面。</p>
+<p><img src="http://ofsypghl3.bkt.clouddn.com/img/ramostear/20161101-3/%E5%9B%BE%E7%89%8710.png" alt=""></p>
+<p>如能成功的进入控制台，至此，Virgo Server环境搭建完毕。</p>
+<blockquote>
+<p>备注：在安装EclipseRT插件的过程中，可能速度会很慢，需要大家耐心等待，具体的速度视你的网络情况而定。</p>
+</blockquote>
 
       
     </div>
@@ -389,13 +409,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/11/01/maven的安装图文教程/">maven的安装图文教程</a></p>
+        <p><span>本文标题:</span><a href="/2016/11/01/基于OSGi的Virgo环境搭建/">基于OSGi的Virgo环境搭建</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">RAMOSTEAR</a></p>
-        <p><span>发布时间:</span>2016-11-01, 02:25:27</p>
-        <p><span>最后更新:</span>2016-11-01, 02:39:35</p>
+        <p><span>发布时间:</span>2016-11-01, 02:48:25</p>
+        <p><span>最后更新:</span>2016-11-01, 03:04:24</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/11/01/maven的安装图文教程/" title="maven的安装图文教程">http://blog.ramostear.com/2016/11/01/maven的安装图文教程/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/11/01/maven的安装图文教程/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/01/基于OSGi的Virgo环境搭建/" title="基于OSGi的Virgo环境搭建">http://blog.ramostear.com/2016/11/01/基于OSGi的Virgo环境搭建/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/11/01/基于OSGi的Virgo环境搭建/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -407,16 +427,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/11/01/基于OSGi的Virgo环境搭建/">
-                    基于OSGi的Virgo环境搭建
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/11/01/Maven-最佳实践之No-M2-HOME/">
-                    Maven 最佳实践之No M2_HOME
+                <a href="/2016/11/01/maven的安装图文教程/">
+                    maven的安装图文教程
                 </a>
             </div>
         
@@ -428,7 +442,7 @@
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OSGi简介"><span class="toc-number">1.</span> <span class="toc-text">OSGi简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#项目背景"><span class="toc-number">2.</span> <span class="toc-text">项目背景</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#相关概念"><span class="toc-number">3.</span> <span class="toc-text">相关概念</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#工具准备"><span class="toc-number">4.</span> <span class="toc-text">工具准备</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#STS的下载和安装"><span class="toc-number">4.1.</span> <span class="toc-text">STS的下载和安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Virgo-Server-的下载和安装"><span class="toc-number">4.2.</span> <span class="toc-text">Virgo Server 的下载和安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在STS中配置Virgo插件"><span class="toc-number">4.3.</span> <span class="toc-text">在STS中配置Virgo插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置Virgo"><span class="toc-number">4.4.</span> <span class="toc-text">配置Virgo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven的配置"><span class="toc-number">4.5.</span> <span class="toc-text">Maven的配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#检查JDK的版本"><span class="toc-number">4.5.1.</span> <span class="toc-text">检查JDK的版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装maven"><span class="toc-number">4.5.2.</span> <span class="toc-text">安装maven</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置系统环境变量"><span class="toc-number">4.5.3.</span> <span class="toc-text">配置系统环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置系统变量Path"><span class="toc-number">4.5.4.</span> <span class="toc-text">设置系统变量Path</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#验证Maven是否安装成功"><span class="toc-number">4.5.5.</span> <span class="toc-text">验证Maven是否安装成功</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动VTS"><span class="toc-number">4.6.</span> <span class="toc-text">启动VTS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#进入VTS控制台"><span class="toc-number">4.7.</span> <span class="toc-text">进入VTS控制台</span></a></li></ol></li></ol>
         
     </div>
     <style>
@@ -464,7 +478,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"maven的安装图文教程　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"基于OSGi的Virgo环境搭建　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -480,7 +494,7 @@
     
       <div class="duoshuo" id="comments">
     <div id="comment-box" ></div>
-    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/01/maven的安装图文教程/" data-title="maven的安装图文教程" data-url="http://blog.ramostear.com/2016/11/01/maven的安装图文教程/"></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/01/基于OSGi的Virgo环境搭建/" data-title="基于OSGi的Virgo环境搭建" data-url="http://blog.ramostear.com/2016/11/01/基于OSGi的Virgo环境搭建/"></div>
     <script>
         var duoshuoQuery = {short_name:"blogramostear"};
         var loadComment = function(){
@@ -503,15 +517,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/11/01/基于OSGi的Virgo环境搭建/" title="上一篇: 基于OSGi的Virgo环境搭建">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/11/01/Maven-最佳实践之No-M2-HOME/" title="下一篇: Maven 最佳实践之No M2_HOME">
+            <a href="/2016/11/01/maven的安装图文教程/" title="下一篇: maven的安装图文教程">
                 <i class="fa fa-angle-right"></i>
             </a>
         
