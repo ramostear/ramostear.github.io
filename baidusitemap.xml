@@ -4,6 +4,31 @@
 
     
   <url>
+    <loc>http://blog.ramostear.com/2016/11/01/The-JSP-specification-requires-that-an-attribute-name-is-preceded-by-whitespace/</loc>
+    <lastmod>2016-10-31T20:19:52.534Z</lastmod>
+    <data>
+        <display>
+        <title>The JSP specification requires that an attribute name is preceded by whitespace</title>
+        <pubTime>2016-10-31T20:12:26.000Z</pubTime>
+        
+        <tag>JSP</tag>
+         
+        <tag>Exception</tag>
+         
+         
+           
+             
+              <breadCrumb title="JSP" url="http://blog.ramostear.com/categories/JSP/"/>
+          
+             
+              <breadCrumb title="Exception" url="http://blog.ramostear.com/categories/JSP/Exception/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.ramostear.com/2016/11/01/Java%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6%E6%A8%A1%E5%9E%8B/</loc>
     <lastmod>2016-10-31T20:06:47.345Z</lastmod>
     <data>
