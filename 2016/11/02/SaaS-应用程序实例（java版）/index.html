@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="RAMOSTEAR" />
+
+
+
+<meta name="description" content="软件即服务（Software as a Service，SaaS）应用程序多承租的性质决定了安全性是一个关键的问题。本文介绍了一个保护多承租 Java™应用程序的可行的、实用的方法，即结合使用开源 Spring Security 框架和 Apache Directory Server。作者通过一个多承租示例 Web 应用程序来展示这个方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SaaS-应用程序实例（java版）">
+<meta property="og:url" content="http://blog.ramostear.com/2016/11/02/SaaS-应用程序实例（java版）/index.html">
+<meta property="og:site_name" content="Ramostear">
+<meta property="og:description" content="软件即服务（Software as a Service，SaaS）应用程序多承租的性质决定了安全性是一个关键的问题。本文介绍了一个保护多承租 Java™应用程序的可行的、实用的方法，即结合使用开源 Spring Security 框架和 Apache Directory Server。作者通过一个多承租示例 Web 应用程序来展示这个方法。">
+<meta property="og:image" content="http://www.ibm.com/developerworks/cn/java/j-saas/MultitenantLDAPUserRegistry.gif">
+<meta property="og:image" content="http://www.ibm.com/developerworks/cn/java/j-saas/MultiTenantDynamicLDAPRouting.gif">
+<meta property="og:updated_time" content="2016-11-02T01:30:00.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SaaS-应用程序实例（java版）">
+<meta name="twitter:description" content="软件即服务（Software as a Service，SaaS）应用程序多承租的性质决定了安全性是一个关键的问题。本文介绍了一个保护多承租 Java™应用程序的可行的、实用的方法，即结合使用开源 Spring Security 框架和 Apache Directory Server。作者通过一个多承租示例 Web 应用程序来展示这个方法。">
+<meta name="twitter:image" content="http://www.ibm.com/developerworks/cn/java/j-saas/MultitenantLDAPUserRegistry.gif">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ramostear" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>SaaS-应用程序实例（java版） | Ramostear</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">RAMOSTEAR</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">文章归档</a></li>
+                        
+                            <li><a href="/tags/">文章标签</a></li>
+                        
+                            <li><a href="/about/">个人介绍</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa CSDN" href="/" title="CSDN"></a>
+                            
+                                <a class="fa Coding" href="/" title="Coding"></a>
+                            
+                                <a class="fa bilibili" href="/" title="bilibili"></a>
+                            
+                                <a class="fa AcFun" href="/" title="AcFun"></a>
+                            
+                                <a class="fa Facebook" href="#" title="Facebook"></a>
+                            
+                                <a class="fa Google" href="#" title="Google"></a>
+                            
+                                <a class="fa Twitter" href="#" title="Twitter"></a>
+                            
+                                <a class="fa LinkedIn" href="#" title="LinkedIn"></a>
+                            
+                                <a class="fa QQ" href="#" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="/Wechat" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DAO/">DAO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Exception/">Exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo主题/">Hexo主题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/No-M2-HOME/">No M2_HOME</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSGi/">OSGi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Virgo服务器/">Virgo服务器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ant/">ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/laypage/">laypage</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/仓库/">仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分页/">分页</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态模块组件/">动态模块组件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/团队/">团队</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图文教程/">图文教程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多租户/">多租户</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安全/">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安装/">安装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实战/">实战</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工作总结/">工作总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用开发/">应用开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发源码/">开发源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件压缩/">文件压缩</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/权限控制/">权限控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/法则/">法则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/泛型/">泛型</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统架构师/">系统架构师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">文章归档</a></li>
+                
+                    <li><a href="/tags/">文章标签</a></li>
+                
+                    <li><a href="/about/">个人介绍</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" target="_blank" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="/" title="CSDN"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="/" title="Coding"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="/" title="bilibili"></a>
+                            
+                                <a class="fa AcFun" target="_blank" href="/" title="AcFun"></a>
+                            
+                                <a class="fa Facebook" target="_blank" href="#" title="Facebook"></a>
+                            
+                                <a class="fa Google" target="_blank" href="#" title="Google"></a>
+                            
+                                <a class="fa Twitter" target="_blank" href="#" title="Twitter"></a>
+                            
+                                <a class="fa LinkedIn" target="_blank" href="#" title="LinkedIn"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="#" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="/Wechat" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-SaaS-应用程序实例（java版）" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/02/SaaS-应用程序实例（java版）/" class="article-date">
+      <time datetime="2016-11-01T23:58:08.000Z" itemprop="datePublished">2016-11-02</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SaaS-应用程序实例（java版）
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a><a class="article-category-link" href="/categories/Java/SaaS/">SaaS</a><a class="article-category-link" href="/categories/Java/SaaS/引用/">引用</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多租户/">多租户</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/安全/">安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/应用开发/">应用开发</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发源码/">开发源码</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="多租户SaaS应用程序的安全性"><a href="#多租户SaaS应用程序的安全性" class="headerlink" title="多租户SaaS应用程序的安全性"></a><center>多租户SaaS应用程序的安全性</center></h1><p>用 Spring Security 和 Apache Directory Server 进行身份验证和授权</p>
+<p><strong>简介</strong>：软件即服务（Software as a Service，SaaS）应用程序多承租的性质决定了安全性是一个关键的问题。本文介绍了一个保护多承租 Java™应用程序的可行的、实用的方法，即结合使用开源 Spring Security 框架和 Apache Directory Server。作者通过一个多承租示例 Web 应用程序来展示这个方法。</p>
+<h2 id="企业中的SaaS"><a href="#企业中的SaaS" class="headerlink" title="企业中的SaaS"></a><code>企业中的SaaS</code></h2><blockquote>
+<p><strong>“</strong> 这些年SaaS开始繁荣起来，越来越多的公司都转向这个随需求应变的解决方案来更快的响应业务需求，降低成本。Forrester Research 于2007年进行的一项调查发现，有16%的大型企业和15%的中小型企业都在使用SaaS。而且每年分别以33%和50%的速度增长。事实上，根据Saugatuck Technology 2008年5月的统计，到2012年，将超过100个员工的商业组织会有70%以上的设备至少一个SaaS应用程序。<strong>”</strong></p>
+</blockquote>
+<p>SaaS能够提供宿主的软件应用程序，并且可以向尚未开发市场领域提供服务，从而使服务提供商实现规模经济。SaaS的多租户最大优点是：它允许服务提供商想多个客户组织提供服务。在SaaS应用程序中有很多用户共享的资源，所以保护它的最好方法就是对数据和配置（基于租户ID）进行逻辑分区，从而确保多租户的安全。<br>本文展示了如何实现第一道有效防线来保护基于Java的多租户SaaS应用程序。该解决方案结合使用了Spring Sequrity(一个经久不衰的开源安全框架)和Apache Directory Server(一个基于Java的流行服务器，它是开源的并且遵循Ligthweight Directory Access Protocol v3，即LDAP v3)。本文提出的解决方案是一个示例<code>Java Web应用程序</code>，它既可以部署到Apache Tomcat，也可以部署到Apache Geronimo。<br>本文重点介绍SaaS模型内的身份验证和授权机制，其他有关SaaS安全性的概念和技术——比如数据保密与隔离、法规、审计和密码等，超出了本文的范围。</p>
+<h2 id="多租户的SaaS应用程序中的身份验证与授权"><a href="#多租户的SaaS应用程序中的身份验证与授权" class="headerlink" title="多租户的SaaS应用程序中的身份验证与授权"></a><strong>多租户的SaaS应用程序中的身份验证与授权</strong></h2><p>身份验证和授权是实现应用程序安全性概念中的主要两个：</p>
+<ul>
+<li>身份验证允许一个应用程序在连接时验证一个人（或一个应用程序、智能卡等）是否与它的声明保持一致。</li>
+<li>授权定义一个用户在一个系统上的权利与权限。用户身份验证通过后，授权会决定该用户在系统上能够有权做什么。因此，授权应该发生在身份验证之后。</li>
+</ul>
+<p>身份验证和授权在SaaS应用程序中是很复杂的。在一个安全性SaaS解决方案中，底层的身份验证和授权基础设施有两种设计方案：集中式或者联邦式。本文中提出的解决方案是集中式身份验证系统（LDAP服务器）。集中式身份验证系统比不排除支持分布式目录的可能性，分布式目录存储了可以分区和复制的信息。本文不考虑采用另一种分散式处理方法，即<em>联邦身份管理</em>。在SaaS领域用联邦身份管理会给安全性带来很多新的挑战。（典型的用例会涉及到跨域、基于Web的单点登录、跨域用户账户供应、跨域授权管理和跨域用户属性交换等。）</p>
+<h2 id="Spring-Sequrity-简介"><a href="#Spring-Sequrity-简介" class="headerlink" title="Spring Sequrity 简介"></a><strong>Spring Sequrity 简介</strong></h2><p><strong><code>Spring Security：比 Acegi 的功能更强大</code></strong><br>Spring Security 从 2003 年开始作为 Spring 的 Acegi Security System，直到 2007 年年末它才成为一个官方的 Spring 项目，并重命名为 Spring Security。我们推荐使用 Spring Security（而不是 Acegi）有以下几点原因：</p>
+<ul>
+<li>它具备 Acegi 的所有优点，并且有额外的优点。</li>
+<li>它利用自定义 Spring 2.0 配置名称空间。</li>
+<li>复杂的安全性细节现在隐藏在更简单的 XML 配置之后。</li>
+<li>它具有自动配置的能力。<br>在默认情况下，Java Enterprise Edition（Java EE）5 安全机制不支持租户ID（tenant ID）等自定义属性，不管它们是什么样的验证者类型（basic，form，digest 或 client certificate）。要支持多租户就必须要实现自定义的解决方案。在本文中，我们将展示如何使用 Spring Security 来构建这样的解决方案。<br>Spring Security 提供了一个综合的安全解决方案，这个方案大大地简化了在 Java EE 应用程序中开发安全措施的工作。它提供了更高级的摘要，能够让您插入不同的身份验证模型，同时还支持丰富的身份验证功能。此外，它还在不同的应用程序服务器之间提供了高度可移植性。Spring Security 有以下特性：</li>
+<li>声明性安全性</li>
+<li>支持各种身份验证和授权机制，如 basic、form、digest、JDBC 和 LDAP</li>
+<li>支持方法级别的安全性以及 JSR-250 安全性注释</li>
+<li>支持单点登录</li>
+<li>支持容器集成</li>
+<li>支持匿名对话、并行对话、remember-me、通道加强等</li>
+</ul>
+<p>本文的重点是直接集成 Spring Security 和 LDAP。其他的部署场景可能会考虑到其他的方法，如 Java 身份验证和授权服务（Java Authentication and Authorization Service，JAAS），或者是由 Spring Security 框架提供的容器适配器进行的容器管理身份验证。</p>
+<h2 id="LDAP-与-Apache-Directory-概述"><a href="#LDAP-与-Apache-Directory-概述" class="headerlink" title="LDAP 与 Apache Directory 概述"></a><strong>LDAP 与 Apache Directory 概述</strong></h2><p>在企业中，管理用户和角色的常见方法是使用 LDAP 服务器。有几个开源的商业 LDAP 解决方案可供选择。考虑到有些读者可能不熟悉 LDAP 或 Apache Directory Server，接下来我们对其进行概述。</p>
+<h3 id="LDAP的核心"><a href="#LDAP的核心" class="headerlink" title="LDAP的核心"></a><strong>LDAP的核心</strong></h3><p>LDAP本质就是一个数据库。但它趋向于包含更多描述性、基于属性的信息。由于LDAP目录中的信息的读多于写，所以LDAP被设计成为读最优化。常见的列子就是电话簿，它里面的每一人都附有地址和电话号码。<br>作为身份验证和授权源，LDAP与关系型数据库管理系统相比有以下几个优点：</p>
+<ul>
+<li>有线协议；无需驱动</li>
+<li>灵活的模式</li>
+<li>以身份为中心<ul>
+<li>身份验证、权限和审计</li>
+<li>组</li>
+<li>安全性（密码、证书）</li>
+</ul>
+</li>
+</ul>
+<h3 id="Apache-Directory-Server-的核心"><a href="#Apache-Directory-Server-的核心" class="headerlink" title="Apache Directory Server 的核心"></a><strong>Apache Directory Server 的核心</strong></h3><p>Apache Directory Server 是一个可嵌套、可扩展、遵循标准的开源LDAP服务器，它由Java语言编写而成，我们为本文的解决方案选择Apache Directory Server 的理由是它的简单性，因为它是一个纯Java实现。对于实现中的应用程序，您一定要正确衡量哪一个LDAP解决方案最符合您的业务和技术需求。<br>Apache Directory 项目提供了一个Apache Directory Server,它遵从LDAP v3和Apache Directory Studio，后者是一个基于Eclipse的目录工具。</p>
+<h1 id="在多租户的环境中集成Spring-Security和Apache-Directory-Server"><a href="#在多租户的环境中集成Spring-Security和Apache-Directory-Server" class="headerlink" title="在多租户的环境中集成Spring Security和Apache Directory Server "></a><center>在多租户的环境中集成Spring Security和Apache Directory Server </center></h1><h2 id="Directory-Server"><a href="#Directory-Server" class="headerlink" title="Directory Server"></a><strong>Directory Server</strong></h2><p>在一般情况下，配置Spring Security 使其能够协同LDAP服务器进行工作很简单。虽然在多租户的环境中集成它们也相对容易，但是还是比一般情况复杂得多。我们首先论述如何在Apache Directory Server中创建一个多租户用户注册表，然后在展示一个动态LDAP路由解决方案如何为一个有效的多租户安全性解决方案提供服务。</p>
+<h3 id="多租户-Apache-Directory-Server-用户注册表"><a href="#多租户-Apache-Directory-Server-用户注册表" class="headerlink" title="多租户 Apache Directory Server 用户注册表"></a><strong>多租户 Apache Directory Server 用户注册表</strong></h3><p>本小节描述一个示例多承租用户注册表，它由两个安全性区域组成，名为 tenant1 和 tenant2，每一区域个都有两组不同的用户：管理员和访问者。每一组都链接着许多用户，这些用户共用一个特定角色，而且都属于该组的相应安全区域。<br>不同区域的用户凭证储存于一个 Apache Directory Server 用户注册表中，位于不同的子树下，如 图 1所示。将不同的 LDAP 后缀分配给不同的安全区域。例如，tenant1 的基本专有名称（Base Distinguished Name，DN）是 [dc=tenant1, dc=com]，tenant2 的基本 DN 为 [dc=tenant2, dc=com]。</p>
+<p><img src="http://www.ibm.com/developerworks/cn/java/j-saas/MultitenantLDAPUserRegistry.gif" alt="多租户LDAP用户注册表示列"></p>
+<p>然后，不同的用户组（在现实中转换成了用户角色）会被分配到对应的每一个安全区域。例如，组 [cn=adm, ou=groups] 和组 [cn=gst, ou=groups]（分别转换成管理员和访问者）属于基本 DN 为 [dc=tenant1, dc=com] 的 tenant1 安全区域。<br>反过来，不同的用户条目与一个特定安全区域下的特定组相关联。例如，用户 [uid=tenant1admin, ou=people] 被赋予管理员的角色 [cn=adm, ou=groups] ，属于安全区域 [dc=tenant1, dc=com]。<br>一定要在 Apache Directory Server 中的 server.xml 配置文件（Apache Directory Server Install Directory/instances/default/conf/server.xml）中为 图 1中的每一个安全区域创建一个新的分区和安全上下文条目，如 清单 1所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"> &lt;spring:beans xmlns:spring=&quot;http://xbean.apache.org/schemas/spring/1.0&quot;</div><div class="line">  xmlns:s=&quot;http://www.springframework.org/schema/beans&quot;</div><div class="line">  xmlns=&quot;http://apacheds.org/config/1.0&quot;&gt;</div><div class="line"> ...</div><div class="line">  &lt;jdbmPartition id=&quot;tenant1&quot; cacheSize=&quot;100&quot; suffix=&quot;dc=tenant1,dc=com&quot;</div><div class="line">                          optimizerEnabled=&quot;true&quot; syncOnWrite=&quot;true&quot;&gt;</div><div class="line">    &lt;indexedAttributes&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.1&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.2&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.3&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.4&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.5&quot; cacheSize=&quot;10&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.6&quot; cacheSize=&quot;10&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;1.3.6.1.4.1.18060.0.4.1.2.7&quot; cacheSize=&quot;10&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;dc&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;ou&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;krb5PrincipalName&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;uid&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">      &lt;jdbmIndex attributeId=&quot;objectClass&quot; cacheSize=&quot;100&quot;/&gt;</div><div class="line">    &lt;/indexedAttributes&gt;</div><div class="line">    &lt;contextEntry&gt;#tenant1ContextEntry&lt;/contextEntry&gt;</div><div class="line">  &lt;/jdbmPartition&gt;</div><div class="line"> ...</div><div class="line">  &lt;spring:bean id=&quot;tenant1ContextEntry&quot;</div><div class="line"> class=&quot;org.springframework.beans.factory.config.MethodInvokingFactoryBean&quot;&gt;</div><div class="line">    &lt;spring:property name=&quot;targetObject&quot;&gt;</div><div class="line">      &lt;spring:ref local=&apos;directoryService&apos;/&gt;</div><div class="line">    &lt;/spring:property&gt;</div><div class="line">    &lt;spring:property name=&quot;targetMethod&quot;&gt;</div><div class="line">      &lt;spring:value&gt;newEntry&lt;/spring:value&gt;</div><div class="line">    &lt;/spring:property&gt;</div><div class="line">    &lt;spring:property name=&quot;arguments&quot;&gt;</div><div class="line">      &lt;spring:list&gt;</div><div class="line">        &lt;spring:value xmlns=&quot;http://www.springframework.org/schema/beans&quot;&gt;</div><div class="line">          objectClass: top</div><div class="line">          objectClass: domain</div><div class="line">          objectClass: extensibleObject</div><div class="line">          dc: tenant1</div><div class="line">        &lt;/spring:value&gt;</div><div class="line">        &lt;spring:value&gt;dc=tenant1,dc=com&lt;/spring:value&gt;</div><div class="line">      &lt;/spring:list&gt;</div><div class="line">    &lt;/spring:property&gt;</div><div class="line">  &lt;/spring:bean&gt;</div><div class="line"> ...</div><div class="line"> &lt;/spring:beans&gt;</div></pre></td></tr></table></figure></p>
+<p>同样地，要像 tenant1 那样为 tenant2 添加一个新的分区和安全性上下文条目。示例 Web 应用程序中有一个简单的示例 .server.xml 文件。<br>创建了安全区域后，就可以使用 LDIF Import Wizard —— Apache Directory Studio Eclipse 插件中的特色工具（参见 参考资料）—— 将类似于 清单 2中的 LDAP Date Interchange Format（LDIF）文件的内容导入到其相应的安全性区域中。示例 Web 应用程序提供示例 LDIF 文件。</p>
+<p>清单 2. <strong>tenant1_users.ldif</strong><br><figure class="highlight profile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line">dn: ou=groups,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: organizationalUnit</div><div class="line"> ou: groups</div><div class="line"></div><div class="line"> dn: ou=people,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: organizationalUnit</div><div class="line"> ou: people</div><div class="line"></div><div class="line"> dn: uid=tenant1admin,ou=people,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: person</div><div class="line"> objectclass: organizationalPerson</div><div class="line"> objectclass: inetOrgPerson</div><div class="line"> cn: tenant1admin</div><div class="line"> sn: tenant1admin</div><div class="line"> uid: tenant1admin</div><div class="line"> userPassword: tenant1admin</div><div class="line"></div><div class="line"> dn: uid=tenant1guest,ou=people,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: person</div><div class="line"> objectclass: organizationalPerson</div><div class="line"> objectclass: inetOrgPerson</div><div class="line"> cn: tenant1guest</div><div class="line"> sn: tenant1guest</div><div class="line"> uid: tenant1guest</div><div class="line"> userPassword: tenant1guest</div><div class="line"></div><div class="line"> dn: cn=gst,ou=groups,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: groupOfNames</div><div class="line"> cn: gst</div><div class="line"> member: uid=tenant1guest,ou=people,dc=tenant1,dc=com</div><div class="line"></div><div class="line"> dn: cn=adm,ou=groups,dc=tenant1,dc=com</div><div class="line"> objectclass: top</div><div class="line"> objectclass: groupOfNames</div><div class="line"> cn: adm</div><div class="line"> member: uid=tenant1admin,ou=people,dc=tenant1,dc=com</div></pre></td></tr></table></figure></p>
+<h3 id="Spring-Security-的动态-LDAP-路由"><a href="#Spring-Security-的动态-LDAP-路由" class="headerlink" title="Spring Security 的动态 LDAP 路由"></a><strong>Spring Security 的动态 LDAP 路由</strong></h3><p>动态 LDAP 路由的原理是在运行时根据查找密钥动态地选择 LDAP 安全性上下文的可能性（参见 图 2）。在一个多承租环境中，这针对一个 LDAP 源（根据承租者的 ID 动态生成）转换成身份验证和授权。</p>
+<p><img src="http://www.ibm.com/developerworks/cn/java/j-saas/MultiTenantDynamicLDAPRouting.gif" alt="多承租动态 LDAP 路由"></p>
+<p>Spring 本身不提供动态 LDAP 路由，所以需要亲自构建。我们的想法受到类似解决方案 —Spring 的 AbstractRoutingDataSource —（参见 参考资料）的启发。<br>我们通过封装三个主要的类来实现动态 LDAP 路由：</p>
+<ul>
+<li><p>清单 3中所示的 AbstractRoutingSpringSecurityContextSource是一个抽象的实现，它基于 Spring 的LdapContextSource类。它引用一组 “真实的” 安全性上下文源（参见 targetSpringSecurityContextSources），它的目的是根据固定的查找密钥将调用路由到众多的目标安全性上下文源之一（参见 getResolvedContextSource()）。<br>清单 3. <strong>AbstractRoutingSpringSecurityContextSource.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line">public abstract class AbstractRoutingSpringSecurityContextSource&lt;T</div><div class="line">    extends Serializable&gt; extends LdapContextSource</div><div class="line">    implements SpringSecurityContextSource, InitializingBean &#123;</div><div class="line"></div><div class="line">  private Map&lt;T, DefaultSpringSecurityContextSource&gt;</div><div class="line">    targetSpringSecurityContextSources;</div><div class="line"></div><div class="line">  /** Determine the current lookup key. This will typically be</div><div class="line">      implemented to check a thread-bound context. */</div><div class="line">  protected abstract T determineCurrentLookupKey();</div><div class="line"></div><div class="line">  /** Determine the &apos;real&apos; security context source dynamically</div><div class="line">      at runtime based upon a lookup key. */</div><div class="line">  protected DefaultSpringSecurityContextSource getResolvedContextSource() &#123;</div><div class="line">    T lookupKey = determineCurrentLookupKey();</div><div class="line">    DefaultSpringSecurityContextSource springSecurityContextSource =</div><div class="line">      this.targetSpringSecurityContextSources.get(lookupKey);</div><div class="line">    if (springSecurityContextSource == null) &#123;</div><div class="line">        throw new IllegalStateException(</div><div class="line">          &quot;Cannot determine target SpringSecurityContextSource for lookup key [&quot; +</div><div class="line">           lookupKey + &quot;]&quot;);</div><div class="line">    &#125;</div><div class="line">    return springSecurityContextSource;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void setTargetSpringSecurityContextSources(</div><div class="line">  Map&lt;T, DefaultSpringSecurityContextSource&gt; targetSpringSecurityContextSources)&#123;</div><div class="line">    this.targetSpringSecurityContextSources = targetSpringSecurityContextSources;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void afterPropertiesSet() throws Exception &#123;</div><div class="line">    if (this.targetSpringSecurityContextSources == null) &#123;</div><div class="line">      throw new IllegalArgumentException(</div><div class="line">        &quot;targetSpringSecurityContextSources is required&quot;);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public DirContext getReadWriteContext(String userDn, Object credentials) &#123;</div><div class="line">    return this.getResolvedContextSource().getReadWriteContext(userDn, credentials);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public DirContext getReadOnlyContext() &#123;</div><div class="line">    return this.getResolvedContextSource().getReadOnlyContext();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public DirContext getReadWriteContext() &#123;</div><div class="line">    return this.getResolvedContextSource().getReadWriteContext();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public DistinguishedName getBaseLdapPath() &#123;</div><div class="line">    return this.getResolvedContextSource().getBaseLdapPath();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public String getBaseLdapPathAsString() &#123;</div><div class="line">    return this.getResolvedContextSource().getBaseLdapPathAsString();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public Class getContextFactory() &#123;</div><div class="line">   return this.getResolvedContextSource().getContextFactory();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public Class getDirObjectFactory() &#123;</div><div class="line">    return this.getResolvedContextSource().getDirObjectFactory();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public boolean isPooled() &#123;</div><div class="line">    return this.getResolvedContextSource().isPooled();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public AuthenticationSource getAuthenticationSource() &#123;</div><div class="line">    return this.getResolvedContextSource().getAuthenticationSource();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public boolean isAnonymousReadOnly() &#123;</div><div class="line">    return this.getResolvedContextSource().isAnonymousReadOnly();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  public String[] getUrls() &#123;</div><div class="line">    return this.getResolvedContextSource().getUrls();</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>第二个类是 TenantRoutingSpringSecurityContextSource，如 清单 4所示。注意，它实现了抽象方法determineCurrentLookupKey()，从而清楚地划分了逻辑界限。<br>清单 4. <strong>TenantRoutingSpringSecurityContextSource.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public class TenantRoutingSpringSecurityContextSource&lt;T extends Serializable&gt;</div><div class="line">    extends AbstractRoutingSpringSecurityContextSource&lt;String&gt; &#123;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  protected String determineCurrentLookupKey() &#123;</div><div class="line">    String lookupKey = TenantSecurityContextHolder.getTenantID();</div><div class="line">    return lookupKey;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>最后一个类是 TenantSecurityContextHolder class，如 清单 5所示，它保留了一个绑定线程的上下文，该上下文有对承租者 ID 的引用，因此 TenantRoutingSpringSecurityContextSource类就能在运行时访问它。<br>清单 5. <strong>TenantSecurityContextHolder.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">public class TenantSecurityContextHolder &#123;</div><div class="line"></div><div class="line">  private static final ThreadLocal&lt;String&gt; contextHolder = new ThreadLocal&lt;String&gt;();</div><div class="line"></div><div class="line">  public static void setTenantID(String tenantID) &#123;</div><div class="line">    contextHolder.set(tenantID);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public static String getTenantID() &#123;</div><div class="line">    return contextHolder.get();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public static void clearTenantID() &#123;</div><div class="line">    contextHolder.remove();</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="动态-LDAP-路由-Web-集成"><a href="#动态-LDAP-路由-Web-集成" class="headerlink" title="动态 LDAP 路由 Web 集成"></a><strong>动态 LDAP 路由 Web 集成</strong></h3><p>我们已经为动态 LDAP 路由打好了基础，但仍然还要做一些集成工作，以便在一个 Web 应用程序中启用它。只要设置了引用承租者 ID 的绑定线程上下文，就可以通过很多种方式来实现这个目的。其中的一个方法就是使用 servlet 过滤器，它负责完成这项任务。<br>清单 6所示的安全性 servlet 过滤器正常工作的前提是：用户登录时，承租者 ID 被作为请求参数传入，然后储存在 Web 会话中，以便随后经过身份验证的请求进入时获取它。</p>
+<p>清单 6. <strong>TenantSecurityContextFilter.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line">public class TenantSecurityContextFilter implements Filter &#123;</div><div class="line"></div><div class="line">  private static final String</div><div class="line">    SPRING_SECURITY_CHECK_MAPPING = &quot;/j_spring_security_check&quot;;</div><div class="line"></div><div class="line">  private static final String</div><div class="line">    SPRING_SECURITY_LOGOUT_MAPPING = &quot;/j_spring_security_logout&quot;;</div><div class="line"></div><div class="line">  private static final String TENANT_HTTP_KEY = &quot;tenant&quot;;</div><div class="line"></div><div class="line">  protected final Log logger = LogFactory.getLog(this.getClass());</div><div class="line"></div><div class="line">  private FilterConfig filterConfig;</div><div class="line"></div><div class="line">  public void init(FilterConfig filterConfig) throws ServletException &#123;</div><div class="line">    this.filterConfig = filterConfig;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void destroy() &#123;</div><div class="line">    this.filterConfig = null;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void doFilter(ServletRequest request, ServletResponse response,</div><div class="line">    FilterChain chain) throws IOException, ServletException &#123;</div><div class="line">    if (null == filterConfig) &#123;</div><div class="line">      return;</div><div class="line">    &#125;</div><div class="line">    HttpServletRequest httpRequest = (HttpServletRequest) request;</div><div class="line"></div><div class="line">    // Clear tenant security context holder, and if it&apos;s a logout</div><div class="line">    // request then clear tenant attribute from the session</div><div class="line">    TenantSecurityContextHolder.clearTenantID();</div><div class="line">    if (httpRequest.getRequestURI().endsWith(SPRING_SECURITY_LOGOUT_MAPPING)) &#123;</div><div class="line">      httpRequest.getSession().removeAttribute(TENANT_HTTP_KEY);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // Resolve Tenant ID</div><div class="line">    String tenantID = null;</div><div class="line">    if (httpRequest.getRequestURI().endsWith(SPRING_SECURITY_CHECK_MAPPING)) &#123;</div><div class="line">      tenantID = request.getParameter(TENANT_HTTP_KEY);</div><div class="line">      httpRequest.getSession().setAttribute(TENANT_HTTP_KEY, tenantID);</div><div class="line">    &#125; else &#123;</div><div class="line">      tenantID = (String) httpRequest.getSession().getAttribute(TENANT_HTTP_KEY);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    // If found, set the Tenant ID in the security context</div><div class="line">    if (null != tenantID) &#123;</div><div class="line">      TenantSecurityContextHolder.setTenantID(tenantID);</div><div class="line">      if (logger.isInfoEnabled()) logger.info(</div><div class="line">        &quot;Tenant context set with Tenant ID: &quot; + tenantID);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    chain.doFilter(request, response);</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h3 id="Spring-Security-XML-配置"><a href="#Spring-Security-XML-配置" class="headerlink" title="Spring Security XML 配置"></a><strong>Spring Security XML 配置</strong></h3><p>Spring 的主要强项之一就是它的 逆向控制（Inversion of Control）（IoC）原则实现，后者清楚地将应用程序的配置和依赖项规范与实际的应用程序代码区分了开来。但人们还是经常会抱怨 Spring 的配置文件 —— 通常都是 XML 格式的 —— 有可能会变得冗长笨重。幸运的是，自从在 Spring 2.0 中引入了名称空间配置特性之后，Spring Security XML 配置就大大减少了。<br>通过使用 Spring Security XML 配置，您能够定义 Spring 应用程序上下文文件中的大部分身份验证和授权的细节问题。这样的细节问题可能包括 LDAP 身份验证供应商的配置以及基于用户角色的 URL 级别的授权。（虽然这里没有显示细粒度的授权，但它可能会因为支持方法级安全性而出现在 Spring Security 中）。<br>虽然 清单 7所示的应用程序安全性上下文 XML 配置文件仅是一个例子，但它清楚地解释了配置 Spring Security 所需的基本的 XML 组件。但要注意如何自动连入自定义多承租 LDAP 路由安全性上下文源，以提供无缝的多承租集成。</p>
+<p>清单 7. <strong>application-context-security.xml</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"> &lt;beans xmlns=&quot;http://www.pringframework.org/schema/beans&quot;</div><div class="line">    xmlns:s=&quot;http://www.springframework.org/schema/security&quot;</div><div class="line">    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans</div><div class="line">    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd</div><div class="line">    http://www.springframework.org/schema/security</div><div class="line">    http://www.springframework.org/schema/security/spring-security-2.0.1.xsd&quot;&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- HTTP security configuration --&gt;</div><div class="line"> &lt;s:http&gt;</div><div class="line">        &lt;s:intercept-url pattern=&quot;/poc/login&quot; access=&quot;IS_AUTHENTICATED_ANONYMOUSLY&quot;/&gt;</div><div class="line">        &lt;s:intercept-url pattern=&quot;/poc/admin/**&quot; access=&quot;ROLE_ADM&quot; /&gt;</div><div class="line">        &lt;s:intercept-url pattern=&quot;/poc/**&quot; access=&quot;ROLE_GST, ROLE_ADM&quot; /&gt;</div><div class="line"></div><div class="line">        &lt;s:form-login login-page=&quot;/poc/login&quot; default-target-url=&quot;/poc/home&quot;/&gt;</div><div class="line">        &lt;s:anonymous /&gt;</div><div class="line">        &lt;s:logout /&gt;</div><div class="line"> &lt;/s:http&gt;</div><div class="line"></div><div class="line"> &lt;!-- LDAP Authentication Provider --&gt;</div><div class="line"> &lt;s:ldap-authentication-provider server-ref=&quot;contextSource&quot;</div><div class="line">        group-search-filter=&quot;member=&#123;0&#125;&quot; group-search-base=&quot;ou=groups&quot;</div><div class="line">        user-search-base=&quot;ou=people&quot; user-search-filter=&quot;uid=&#123;0&#125;&quot;/&gt;</div><div class="line"></div><div class="line"> &lt;!-- Custom Multitenant Routing Spring Security Context Source --&gt;</div><div class="line"> &lt;bean id=&quot;contextSource&quot; class=</div><div class="line"> &quot;poc.saas.security.core.multitenancy.context.TenantRoutingSpringSecurityContextSource&quot;&gt;</div><div class="line"> &lt;property name=&quot;targetSpringSecurityContextSources&quot;&gt;</div><div class="line">      &lt;map&gt;</div><div class="line">         &lt;entry key=&quot;Tenant1&quot; value-ref=&quot;tenant1ContextSource&quot;/&gt;</div><div class="line">         &lt;entry key=&quot;Tenant2&quot; value-ref=&quot;tenant2ContextSource&quot;/&gt;</div><div class="line">      &lt;/map&gt;</div><div class="line">        &lt;/property&gt;</div><div class="line"> &lt;/bean&gt;</div><div class="line"></div><div class="line"> &lt;!-- This bean points at the at the Tenant1 LDAP Server  --&gt;</div><div class="line"> &lt;bean id=&quot;tenant1ContextSource&quot;</div><div class="line">    class=&quot;org.springframework.security.ldap.DefaultSpringSecurityContextSource&quot;&gt;</div><div class="line">        &lt;constructor-arg value=&quot;ldap://localhost:10389/dc=tenant1,dc=com&quot;/&gt;</div><div class="line">        &lt;property name=&quot;userDn&quot;&gt;&lt;value&gt;uid=admin,ou=system&lt;/value&gt;&lt;/property&gt;</div><div class="line">      &lt;property name=&quot;password&quot;&gt;&lt;value&gt;secret&lt;/value&gt;&lt;/property&gt;</div><div class="line"> &lt;/bean&gt;</div><div class="line"></div><div class="line"> &lt;!-- This bean points at the at the Tenant2 LDAP Server  --&gt;</div><div class="line"> &lt;bean id=&quot;tenant2ContextSource&quot;</div><div class="line">    class=&quot;org.springframework.security.ldap.DefaultSpringSecurityContextSource&quot;&gt;</div><div class="line">        &lt;constructor-arg value=&quot;ldap://localhost:10389/dc=tenant2,dc=com&quot;/&gt;</div><div class="line">        &lt;property name=&quot;userDn&quot;&gt;&lt;value&gt;uid=admin,ou=system&lt;/value&gt;&lt;/property&gt;</div><div class="line">      &lt;property name=&quot;password&quot;&gt;&lt;value&gt;secret&lt;/value&gt;&lt;/property&gt;</div><div class="line"> &lt;/bean&gt;</div><div class="line"> ...</div><div class="line"> &lt;/beans&gt;</div></pre></td></tr></table></figure></p>
+<p>要在标准的 Java Web 应用程序中启用 Spring Security，您还要具备应用程序安全性上下文和 web.xml 部署描述符文件中的安全性过滤器，如 清单 8所示：</p>
+<p>清单 8. <strong>web.xml</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line"> &lt;web-app xmlns=&quot;http://java.sun.com/xml/ns/j2ee&quot;</div><div class="line"> xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; version=&quot;2.4&quot;</div><div class="line"> xsi:schemaLocation=&quot;http://java.sun.com/xml/ns/j2ee</div><div class="line">        http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd&quot;&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Spring context configuration files --&gt;</div><div class="line"> &lt;context-param&gt;</div><div class="line"> &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;</div><div class="line"> &lt;param-value&gt;</div><div class="line"> ...</div><div class="line"> classpath*:application-context-security.xml</div><div class="line"> &lt;/param-value&gt;</div><div class="line"> &lt;/context-param&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Tenant Security Context Filter --&gt;</div><div class="line"> &lt;filter&gt;</div><div class="line"> &lt;filter-name&gt;Tenant Security Context Filter&lt;/filter-name&gt;</div><div class="line"> &lt;filter-class&gt;</div><div class="line">  poc.saas.security.core.multitenancy.web.filter.TenantSecurityContextFilter</div><div class="line"> &lt;/filter-class&gt;</div><div class="line"> &lt;/filter&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Spring Security Filter --&gt;</div><div class="line"> &lt;filter&gt;</div><div class="line">        &lt;filter-name&gt;springSecurityFilterChain&lt;/filter-name&gt;</div><div class="line">        &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;</div><div class="line"> &lt;/filter&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Tenant Security Context Filter Mapping --&gt;</div><div class="line"> &lt;filter-mapping&gt;</div><div class="line"> &lt;filter-name&gt;Tenant Security Context Filter&lt;/filter-name&gt;</div><div class="line"> &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</div><div class="line"> &lt;/filter-mapping&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Spring Security Filter Mapping --&gt;</div><div class="line"> &lt;filter-mapping&gt;</div><div class="line">      &lt;filter-name&gt;springSecurityFilterChain&lt;/filter-name&gt;</div><div class="line">      &lt;url-pattern&gt;/*&lt;/url-pattern&gt;</div><div class="line"> &lt;/filter-mapping&gt;</div><div class="line"> ...</div><div class="line"> &lt;!-- Spring MVC web context listener --&gt;</div><div class="line"> &lt;listener&gt;</div><div class="line"> &lt;listener-class&gt;</div><div class="line">  org.springframework.web.context.ContextLoaderListener</div><div class="line"> &lt;/listener-class&gt;</div><div class="line"> &lt;/listener&gt;</div><div class="line"> ...</div><div class="line"> &lt;/web-app&gt;</div></pre></td></tr></table></figure>
+<h3 id="验证多组合身份验证"><a href="#验证多组合身份验证" class="headerlink" title="验证多组合身份验证"></a><strong>验证多组合身份验证</strong></h3><p>清单 9展示了一个 JUnit 测试，它得益于 Spring 对集成测试的支持。该集成测试允许我们验证多承租身份验证过程是否按预期运行，并且不需要将代码部署到一个应用服务器。但是，该测试一定要运行 Apache Directory Server，充当身份验证供应商。本测试的主要目的是尝试根据两个安全区域（tenant1 和 tenant2）来验证各种用户，其中的用户有些是有效的，有些是无效的。下面的代码清单显示了详细的步骤。</p>
+<p>清单 9. <strong>MultiTenantAuthenticationTest.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div></pre></td><td class="code"><pre><div class="line">public class MultiTenantAuthenticationTest</div><div class="line">    extends AbstractDependencyInjectionSpringContextTests &#123;</div><div class="line"></div><div class="line">  private static final String</div><div class="line">    APPLICATION_CONTEXT_SECURITY = &quot;classpath:application-context-security.xml&quot;;</div><div class="line"></div><div class="line">  private FilterChain passThroughFilterChain;</div><div class="line"></div><div class="line">  private Filter formLoginFilter;</div><div class="line"></div><div class="line">  private Filter tenantSecurityContextFilter;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  protected String[] getConfigLocations() &#123;</div><div class="line">    return new String[] &#123;APPLICATION_CONTEXT_SECURITY&#125;;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  @Override</div><div class="line">  protected void onSetUp() throws Exception &#123;</div><div class="line">    // Setup mock instances</div><div class="line">    MockServletContext servletContext = new MockServletContext(&quot;&quot;);</div><div class="line">    servletContext.addInitParameter(ContextLoader.CONFIG_LOCATION_PARAM,</div><div class="line">                                APPLICATION_CONTEXT_SECURITY);</div><div class="line">    ServletContextListener contextListener = new ContextLoaderListener();</div><div class="line">    ServletContextEvent event = new ServletContextEvent(servletContext);</div><div class="line">    contextListener.contextInitialized(event);</div><div class="line">    MockFilterConfig mockConfig = new MockFilterConfig(servletContext);</div><div class="line"></div><div class="line">    // Setup tenant security context filter</div><div class="line">    tenantSecurityContextFilter = new TenantSecurityContextFilter();</div><div class="line">    tenantSecurityContextFilter.init(mockConfig);</div><div class="line"></div><div class="line">    // Setup Spring Security&apos;s form login filter</div><div class="line">    formLoginFilter =</div><div class="line">      (Filter) this.getApplicationContext().getBean(&quot;_formLoginFilter&quot;);</div><div class="line">    formLoginFilter.init(mockConfig);</div><div class="line"></div><div class="line">    // Setup a pass through filter chain</div><div class="line">    passThroughFilterChain =</div><div class="line">      new PassThroughFilterChain(formLoginFilter, new MockFilterChain());</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  public void testMultiTenantAuthenticationWorksAsExpected() throws Exception &#123;</div><div class="line">    this.assertGivenUserCredentialsAreValid(&quot;Tenant1&quot;, &quot;tenant1admin&quot;, &quot;tenant1admin&quot;);</div><div class="line">    this.assertGivenUserCredentialsAreValid(&quot;Tenant2&quot;, &quot;tenant2admin&quot;, &quot;tenant2admin&quot;);</div><div class="line">    this.assertGivenUserCredentialsAreInvalid(&quot;Tenant1&quot;, &quot;invalidUser&quot;, &quot;wrongPassword&quot;);</div><div class="line">    this.assertGivenUserCredentialsAreInvalid(&quot;Tenant1&quot;, &quot;tenant1admin&quot;, &quot;wrongPassword&quot;);</div><div class="line">    this.assertGivenUserCredentialsAreInvalid(&quot;Tenant2&quot;, &quot;tenant1admin&quot;, &quot;tenant1admin&quot;);</div><div class="line">    this.assertGivenUserCredentialsAreValid(&quot;Tenant2&quot;, &quot;tenant2guest&quot;, &quot;tenant2guest&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private void assertGivenUserCredentialsAreValid</div><div class="line">    (String tenantId, String username, String password) throws Exception &#123;</div><div class="line">    // Authenticate valid user using the given tenant id</div><div class="line">    Object[] result = this.performUserAuthentication(tenantId, username, password);</div><div class="line"></div><div class="line">    // Ensure user is now authenticated and has been redirected to the home page</div><div class="line">    assertNotNull(SecurityContextHolder.getContext().getAuthentication());</div><div class="line">    assertEquals(username,</div><div class="line">      SecurityContextHolder.getContext().getAuthentication().getName());</div><div class="line">    assertEquals(&quot;/poc/home&quot;, result[0]);</div><div class="line"></div><div class="line">    System.out.println(&quot;Authentication success for user &quot; + username + &quot; [&quot; +</div><div class="line">      SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass()</div><div class="line">      + &quot;]&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private void assertGivenUserCredentialsAreInvalid(</div><div class="line">    String tenantId, String username, String password) throws Exception &#123;</div><div class="line">    // Attempt to authenticate invalid user using the given tenant id</div><div class="line">    Object[] result = this.performUserAuthentication(tenantId, username, password);</div><div class="line"></div><div class="line">    // Ensure user was denied authentication and has</div><div class="line">    // been redirected back to the login page</div><div class="line">    assertNull(SecurityContextHolder.getContext().getAuthentication());</div><div class="line">    assertEquals(&quot;/poc/login&quot;, result[0]);</div><div class="line"></div><div class="line">    System.out.println(&quot;Authentication failed for user &quot;</div><div class="line">      + username + &quot; [&quot; + result[1].getClass() + &quot;]&quot;);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  private Object[] performUserAuthentication(</div><div class="line">    String tenantId, String username, String password) throws Exception &#123;</div><div class="line">    // Build mock request</div><div class="line">    MockHttpServletRequest request =</div><div class="line">      new MockHttpServletRequest(&quot;POST&quot;, &quot;/poc/j_spring_security_check&quot;);</div><div class="line">    request.setParameter(&quot;tenant&quot;, tenantId);</div><div class="line">    request.setParameter(&quot;j_username&quot;, username);</div><div class="line">    request.setParameter(&quot;j_password&quot;, password);</div><div class="line"></div><div class="line">    // Run security filter and return response URL</div><div class="line">    MockHttpServletResponse response = new MockHttpServletResponse();</div><div class="line">    tenantSecurityContextFilter.doFilter(request, response, passThroughFilterChain);</div><div class="line"></div><div class="line">    Object[] result =</div><div class="line">      &#123;response.getRedirectedUrl(),</div><div class="line">       request.getSession().getAttribute(&quot;SPRING_SECURITY_LAST_EXCEPTION&quot;)&#125;;</div><div class="line">    return result;</div><div class="line">  &#125;</div><div class="line"></div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<p>该测试模拟了以下这个逻辑流程：</p>
+<ol>
+<li>在 onSetUp()方法中设置一组模拟对象和 TenantSecurityContextFilter。</li>
+<li>每次运行测试都会调用的 testMultiTenantAuthenticationWorksAsExpected()方法通过分别调用assertGivenUserCredentialsAreValid()和 assertGivenUserCredentialsAreInvalid()确保有效用户获得访问权，而无效用户不能进行访问。</li>
+<li>assertGivenUserCredentialsAreValid()方法被调用时，它会尝试验证给定用户，确定用户已按预期进行了身份验证。</li>
+<li>assertGivenUserCredentialsAreInvalid()方法被调用时，它会尝试验证给定用户（其凭证无效），确定拒绝用户的访问，然后返回到登录页面。</li>
+<li><p>无论是被 assertGivenUserCredentialsAreValid()调用，还是被 assertGivenUserCredentialsAreInvalid()调用，performUserAuthentication()方法都会触发实际的身份验证过程：</p>
+<ul>
+<li>以给定的承租者 ID、用户名和密码作为请求参数，向我们先前创建的 TenantSecurityContextFilter实例发出一个伪 HTTP 登陆请求。</li>
+<li>我们的安全性过滤器解释该登陆请求，提取承租者 ID，并在将请求传递给 passThroughFilterChain前将其作为一个绑定线程的上下文储存在 TenantSecurityContextHolder中。您可能已经注意，在onSetUp()中，passThroughFilterChain被设置为标准 Spring Security 表格登陆过滤器的包装器，该过滤器是在后台由 LDAP 身份验证供应商创建的。这个身份验证供应商在 application-context-security.xml 中定义，并被配置成使用TenantRoutingSpringSecurityContextSource作为 LDAP 上下文源。因此，当 Spring Security 尝试获取上下文源进行验证时，TenantRoutingSpringSecurityContextSource（它扩展了AbstractRoutingSpringSecurityContextSource）会根据保存在 TenantSecurityContextHolder中的承租者 ID 动态地方返回正确的 LDAP 源。</li>
+</ul>
+</li>
+</ol>
+<p>显示一个闪亮的绿色成功条并不能表明什么，因此，清单 10以 JUnit 测试的形式展示了在 Eclipse 内部运行MultiTenantAuthenticationTest而生成的控制台输出：</p>
+<p><strong>清单 10. 测试输出</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">Authentication success for user tenant1admin</div><div class="line">  [org.springframework.security.userdetails.ldap.LdapUserDetailsImpl@676437]</div><div class="line"></div><div class="line"> Authentication success for user tenant2admin</div><div class="line">  [org.springframework.security.userdetails.ldap.LdapUserDetailsImpl@992bae]</div><div class="line"></div><div class="line"> Authentication failed for user invalidUser</div><div class="line">  [org.springframework.security.userdetails.UsernameNotFoundException]</div><div class="line"></div><div class="line"> Authentication failed for user tenant1admin</div><div class="line">  [org.springframework.security.BadCredentialsException]</div><div class="line"></div><div class="line"> Authentication failed for user tenant1admin</div><div class="line">  [org.springframework.security.userdetails.UsernameNotFoundException]</div><div class="line"></div><div class="line"> Authentication success for user tenant2guest</div><div class="line">  [org.springframework.security.userdetails.ldap.LdapUserDetailsImpl@1f64158]</div></pre></td></tr></table></figure></p>
+<h1 id="示例应用程序"><a href="#示例应用程序" class="headerlink" title="示例应用程序"></a><strong>示例应用程序</strong></h1><p>本文提供了一个示例 Web 应用程序，它示演示了您至今学到的所有概念。它还额外提供了一些用户和密码管理功能，它们是用 Spring LDAP 来实现的。Spring LDAP 是一个框架，它的目的是将 Java 开发人员从基于 Spring 的 Java 应用程序的常见基础设施细节中解放出来。<br>虽然示例 Web 应用程序是在考虑安全性的情况下设计的，但您仍然要意识到它存在很多潜在的漏洞 —包括跨站点脚本、伪请求和对话拦截。在现实中保护企业 Web 应用程序时一定要考虑到这些方面。Open Web Application Security Project（OWASP）保存了很多针对这些类型的安全风险的有用参考资料。</p>
+<p>示例 Web 应用程序基于 Servlet API 2.5、JavaServer Pages 2.1、Spring 2.5、Spring Web MVC 2.5 和 Spring Security 2.0.1。在 Eclipse 和 Apache Maven 2 的帮助下，这个应用程序成功地部署到以下平台并进行了测试：</p>
+<ul>
+<li>Apache Tomcat 6，运行在 Java SE 6</li>
+<li>嵌入了 Tomcat 6 或 Jetty 6 的 Apache Geronimo 2.1，运行于 Java SE 5</li>
+</ul>
+<p>现在就 下载示例应用程序，并开始探索它。下载内容包含有一个 readme.html 文件，它会逐步引导您构建并运行这个应用程序。</p>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a><strong>结束语</strong></h1><p>本文分析了实现多承租应用程序的安全性必须考虑重要问题。我们展示了如何设置多承租 Apache Directory Server 用户注册表，以及如何利用 Spring Security 框架根据 LDAP 多承租源进行身份验证和授权。您还学会了如何通过动态 LDAP 路由解决方案的帮助，在一个多承租的生态系统中集成 Spring Security 和 Apache Directory Server。</p>
+<h2 id="虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的-SaaS-需求的技术解决方案。您可以查看本文的-参考资料，找到构建-SaaS-解决方案的其他方法。"><a href="#虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的-SaaS-需求的技术解决方案。您可以查看本文的-参考资料，找到构建-SaaS-解决方案的其他方法。" class="headerlink" title="虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的 SaaS 需求的技术解决方案。您可以查看本文的 参考资料，找到构建 SaaS 解决方案的其他方法。"></a>虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的 SaaS 需求的技术解决方案。您可以查看本文的 参考资料，找到构建 SaaS 解决方案的其他方法。</h2><p>原文作者：<a href="http://www.ibm.com/developerworks/cn/java/j-saas/#author1" target="_blank" rel="external">Massimiliano Parlione</a> <a href="http://www.ibm.com/developerworks/cn/java/j-saas/#author2" target="_blank" rel="external">Chico Charlesworth</a></p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/02/SaaS-应用程序实例（java版）/">SaaS-应用程序实例（java版）</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">RAMOSTEAR</a></p>
+        <p><span>发布时间:</span>2016-11-02, 07:58:08</p>
+        <p><span>最后更新:</span>2016-11-02, 09:30:00</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/02/SaaS-应用程序实例（java版）/" title="SaaS-应用程序实例（java版）">http://blog.ramostear.com/2016/11/02/SaaS-应用程序实例（java版）/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/11/02/SaaS-应用程序实例（java版）/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/01/建立团队的12项法则/">
+                    建立团队的12项法则
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#多租户SaaS应用程序的安全性"><span class="toc-number">1.</span> <span class="toc-text">多租户SaaS应用程序的安全性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#企业中的SaaS"><span class="toc-number">1.1.</span> <span class="toc-text">企业中的SaaS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多租户的SaaS应用程序中的身份验证与授权"><span class="toc-number">1.2.</span> <span class="toc-text">多租户的SaaS应用程序中的身份验证与授权</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring-Sequrity-简介"><span class="toc-number">1.3.</span> <span class="toc-text">Spring Sequrity 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LDAP-与-Apache-Directory-概述"><span class="toc-number">1.4.</span> <span class="toc-text">LDAP 与 Apache Directory 概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#LDAP的核心"><span class="toc-number">1.4.1.</span> <span class="toc-text">LDAP的核心</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Apache-Directory-Server-的核心"><span class="toc-number">1.4.2.</span> <span class="toc-text">Apache Directory Server 的核心</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在多租户的环境中集成Spring-Security和Apache-Directory-Server"><span class="toc-number">2.</span> <span class="toc-text">在多租户的环境中集成Spring Security和Apache Directory Server </span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Directory-Server"><span class="toc-number">2.1.</span> <span class="toc-text">Directory Server</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多租户-Apache-Directory-Server-用户注册表"><span class="toc-number">2.1.1.</span> <span class="toc-text">多租户 Apache Directory Server 用户注册表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Security-的动态-LDAP-路由"><span class="toc-number">2.1.2.</span> <span class="toc-text">Spring Security 的动态 LDAP 路由</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#动态-LDAP-路由-Web-集成"><span class="toc-number">2.1.3.</span> <span class="toc-text">动态 LDAP 路由 Web 集成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-Security-XML-配置"><span class="toc-number">2.1.4.</span> <span class="toc-text">Spring Security XML 配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#验证多组合身份验证"><span class="toc-number">2.1.5.</span> <span class="toc-text">验证多组合身份验证</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#示例应用程序"><span class="toc-number">3.</span> <span class="toc-text">示例应用程序</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结束语"><span class="toc-number">4.</span> <span class="toc-text">结束语</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的-SaaS-需求的技术解决方案。您可以查看本文的-参考资料，找到构建-SaaS-解决方案的其他方法。"><span class="toc-number">4.1.</span> <span class="toc-text">虽然我们提倡本文提出的解决方案，但仍然建议您仔细斟酌，正确选择最符合您的 SaaS 需求的技术解决方案。您可以查看本文的 参考资料，找到构建 SaaS 解决方案的其他方法。</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"SaaS-应用程序实例（java版）　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/02/SaaS-应用程序实例（java版）/" data-title="SaaS-应用程序实例（java版）" data-url="http://blog.ramostear.com/2016/11/02/SaaS-应用程序实例（java版）/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"blogramostear"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/01/建立团队的12项法则/" title="下一篇: 建立团队的12项法则">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/02/SaaS-应用程序实例（java版）/">SaaS-应用程序实例（java版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/建立团队的12项法则/">建立团队的12项法则</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/系统分析实战技巧/">系统分析实战技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/The-JSP-specification-requires-that-an-attribute-name-is-preceded-by-whitespace/">The JSP specification requires that an attribute name is preceded by whitespace</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Java权限控制模型/">Java权限控制模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/OSGi入门知识梳理/">OSGi入门知识梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于OSGi的Virgo环境搭建/">基于OSGi的Virgo环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/maven的安装图文教程/">maven的安装图文教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Maven-最佳实践之No-M2-HOME/">Maven 最佳实践之No M2_HOME</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/安装本地Jar包到Maven仓库/">安装本地Jar包到Maven仓库</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Laypage的java分页技术/">基于Laypage的java分页技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Hibernate3的通用泛型公共DAO/">基于Hibernate3的通用泛型公共DAO</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Java中文件的解压缩操作/">Java中文件的解压缩操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Hexo-Github搭建个人博客/">Hexo+Github搭建个人博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/双栏Blog主题使用/">双栏Blog主题使用</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2016 RAMOSTEAR
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+            
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+             articleNav: "#article-nav a, #post-nav-button a", 
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
