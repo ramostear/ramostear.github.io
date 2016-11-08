@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>http://blog.ramostear.com/2016/11/08/%E6%8A%80%E6%9C%AF%E9%A2%86%E8%A2%96CTO/</loc>
+    <lastmod>2016-11-08T03:33:49.116Z</lastmod>
+    <data>
+        <display>
+        <title>技术领袖CTO</title>
+        <pubTime>2016-11-08T02:22:39.000Z</pubTime>
+        
+        <tag>CTO</tag>
+         
+        <tag>首席技术官</tag>
+         
+        <tag>团队管理</tag>
+         
+         
+           
+             
+              <breadCrumb title="CTO" url="http://blog.ramostear.com/categories/CTO/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.ramostear.com/2016/11/02/SaaS-%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%AE%9E%E4%BE%8B%EF%BC%88java%E7%89%88%EF%BC%89/</loc>
     <lastmod>2016-11-02T01:30:00.791Z</lastmod>
     <data>
@@ -11,6 +35,8 @@
         <title>SaaS-应用程序实例（java版）</title>
         <pubTime>2016-11-01T23:58:08.000Z</pubTime>
         
+        <tag>Java</tag>
+         
         <tag>安全</tag>
          
         <tag>应用开发</tag>
@@ -18,8 +44,6 @@
         <tag>开发源码</tag>
          
         <tag>SaaS</tag>
-         
-        <tag>Java</tag>
          
         <tag>多租户</tag>
          
