@@ -4,6 +4,38 @@
 
     
   <url>
+    <loc>http://blog.ramostear.com/2016/11/08/%E5%9F%BA%E4%BA%8EHibernateDaoSupport%E7%9A%84%E6%B3%9B%E5%9E%8B%E7%B1%BBDAO/</loc>
+    <lastmod>2016-11-08T04:05:03.451Z</lastmod>
+    <data>
+        <display>
+        <title>基于HibernateDaoSupport的泛型类DAO</title>
+        <pubTime>2016-11-08T03:40:42.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>DAO</tag>
+         
+        <tag>泛型类</tag>
+         
+        <tag>Hibernate</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://blog.ramostear.com/categories/Java/"/>
+          
+             
+              <breadCrumb title="Hibernate" url="http://blog.ramostear.com/categories/Java/Hibernate/"/>
+          
+             
+              <breadCrumb title="DAO" url="http://blog.ramostear.com/categories/Java/Hibernate/DAO/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.ramostear.com/2016/11/08/%E6%8A%80%E6%9C%AF%E9%A2%86%E8%A2%96CTO/</loc>
     <lastmod>2016-11-08T03:33:49.116Z</lastmod>
     <data>

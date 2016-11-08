@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="RAMOSTEAR" />
+
+
+
+<meta name="description" content="泛型是java SE1.5的新特性，泛型本质上是参数化类型，也就是说所操作的数据类型被指定为一个参数。这种参数类型可以在类、接口和方法中创建，分别称为泛型类、泛型接口和泛型方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于HibernateDaoSupport的泛型类DAO">
+<meta property="og:url" content="http://blog.ramostear.com/2016/11/08/基于HibernateDaoSupport的泛型类DAO/index.html">
+<meta property="og:site_name" content="Ramostear">
+<meta property="og:description" content="泛型是java SE1.5的新特性，泛型本质上是参数化类型，也就是说所操作的数据类型被指定为一个参数。这种参数类型可以在类、接口和方法中创建，分别称为泛型类、泛型接口和泛型方法。">
+<meta property="og:updated_time" content="2016-11-08T04:05:03.451Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于HibernateDaoSupport的泛型类DAO">
+<meta name="twitter:description" content="泛型是java SE1.5的新特性，泛型本质上是参数化类型，也就是说所操作的数据类型被指定为一个参数。这种参数类型可以在类、接口和方法中创建，分别称为泛型类、泛型接口和泛型方法。">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ramostear" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>基于HibernateDaoSupport的泛型类DAO | Ramostear</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/avatar.png" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">RAMOSTEAR</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="true" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">文章归档</a></li>
+                        
+                            <li><a href="/tags/">文章标签</a></li>
+                        
+                            <li><a href="/about/">个人介绍</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa CSDN" href="/" title="CSDN"></a>
+                            
+                                <a class="fa Coding" href="/" title="Coding"></a>
+                            
+                                <a class="fa bilibili" href="/" title="bilibili"></a>
+                            
+                                <a class="fa AcFun" href="/" title="AcFun"></a>
+                            
+                                <a class="fa Facebook" href="#" title="Facebook"></a>
+                            
+                                <a class="fa Google" href="#" title="Google"></a>
+                            
+                                <a class="fa Twitter" href="#" title="Twitter"></a>
+                            
+                                <a class="fa LinkedIn" href="#" title="LinkedIn"></a>
+                            
+                                <a class="fa QQ" href="#" title="QQ"></a>
+                            
+                                <a class="fa 微信" href="/Wechat" title="微信"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blog/">Blog</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CTO/">CTO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DAO/">DAO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Exception/">Exception</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/">Github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hexo主题/">Hexo主题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hibernate/">Hibernate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSP/">JSP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/No-M2-HOME/">No M2_HOME</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OSGi/">OSGi</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RBAC/">RBAC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Virgo服务器/">Virgo服务器</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ant/">ant</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/laypage/">laypage</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/仓库/">仓库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分页/">分页</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/动态模块组件/">动态模块组件</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/团队/">团队</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/团队管理/">团队管理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图文教程/">图文教程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多租户/">多租户</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安全/">安全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/安装/">安装</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/实战/">实战</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/工作总结/">工作总结</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/应用开发/">应用开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发源码/">开发源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/文件压缩/">文件压缩</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/权限控制/">权限控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/法则/">法则</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/泛型/">泛型</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/泛型类/">泛型类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统架构师/">系统架构师</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/首席技术官/">首席技术官</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/avatar.png" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">RAMOSTEAR</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">谭朝红的博客|致力于互联网云计算和物联网技术的研究学习和运用</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">文章归档</a></li>
+                
+                    <li><a href="/tags/">文章标签</a></li>
+                
+                    <li><a href="/about/">个人介绍</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ramostear@163.com" title="Email"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/ramostear" title="GitHub"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="/zhihu" title="知乎"></a>
+                            
+                                <a class="fa 豆瓣" target="_blank" href="/douban" title="豆瓣"></a>
+                            
+                                <a class="fa 简书" target="_blank" href="/jianshu" title="简书"></a>
+                            
+                                <a class="fa CSDN" target="_blank" href="/" title="CSDN"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="/" title="Coding"></a>
+                            
+                                <a class="fa bilibili" target="_blank" href="/" title="bilibili"></a>
+                            
+                                <a class="fa AcFun" target="_blank" href="/" title="AcFun"></a>
+                            
+                                <a class="fa Facebook" target="_blank" href="#" title="Facebook"></a>
+                            
+                                <a class="fa Google" target="_blank" href="#" title="Google"></a>
+                            
+                                <a class="fa Twitter" target="_blank" href="#" title="Twitter"></a>
+                            
+                                <a class="fa LinkedIn" target="_blank" href="#" title="LinkedIn"></a>
+                            
+                                <a class="fa QQ" target="_blank" href="#" title="QQ"></a>
+                            
+                                <a class="fa 微信" target="_blank" href="/Wechat" title="微信"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-基于HibernateDaoSupport的泛型类DAO" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/08/基于HibernateDaoSupport的泛型类DAO/" class="article-date">
+      <time datetime="2016-11-08T03:40:42.000Z" itemprop="datePublished">2016-11-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      基于HibernateDaoSupport的泛型类DAO
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/Java/">Java</a><a class="article-category-link" href="/categories/Java/Hibernate/">Hibernate</a><a class="article-category-link" href="/categories/Java/Hibernate/DAO/">DAO</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/DAO/">DAO</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hibernate/">Hibernate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/泛型类/">泛型类</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>泛型是java SE 1.5的新特性，泛型本质上是参数化类型，也就是说所操作的数据类型被指定为一个参数。这种参数类型可以在类、接口和方法中创建，分别称为泛型类、泛型接口和泛型方法。<br>    Java语言引入泛型的好处是安全简单。泛型的优点在于编译时检查类型安全，并且所有的强制转换都是自动和隐式的，提高代码的重用率。<br>    泛型在使用过程中需要遵循一些规则以及泛型的限制条件：</p>
+<pre><code>1. 泛型的类型参数只能是类类型（包含自定义类），不能是简单类型。
+2. 同一种泛型可以对应多个版本（因为参数类型是不确定的），不同版本的泛型类实例是不兼容的。
+3. 泛型的类型参数可以有多个。
+4. 泛型的参数类型可以使用extends语句，例如&lt;T extends superclass&gt;。习惯上称为“有界类型”。
+5. 泛型的参数类型还可以是通配符。例如Class&lt;?&gt;classType = Class.forName(java.lang.String);
+</code></pre><p>泛型也存在自身的一些缺点，每次定义是都要写明泛型的类型，代码量加大。如果你的项目不是完全按照面向接口编程，那么不用泛型也没有问题，如果代码是面向接口编程，泛型将有助于帮助你在编译时就把错误找出来。</p>
+<h2 id="通用DAO接口定义"><a href="#通用DAO接口定义" class="headerlink" title="通用DAO接口定义"></a>通用DAO接口定义</h2><p><strong>代码清1：GeneralHibernateDao.java</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line">public interface GeneralHibernateDao&lt;T,ID extends Serializable&gt; &#123;</div><div class="line"></div><div class="line">/**</div><div class="line">* 保存实体</div><div class="line">* @param entity</div><div class="line">*/</div><div class="line">public void save(T entity);</div><div class="line">/**</div><div class="line">* 删除实体</div><div class="line">* @param entity</div><div class="line">*/</div><div class="line">public void delete(T entity);</div><div class="line"></div><div class="line">/**</div><div class="line">* 获取所有实体集合</div><div class="line">* @param entityClass</div><div class="line">* @return</div><div class="line">*/</div><div class="line">public List&lt;T&gt; findAll(Class&lt;T&gt; entityClass);</div><div class="line"></div><div class="line">/**</div><div class="line">* 保存或更新实体</div><div class="line">* @param entity</div><div class="line">*/</div><div class="line">public void saveOrUpdate(T entity);</div><div class="line"></div><div class="line">/**</div><div class="line">* 查找指定ID实体对象</div><div class="line">* @param entityClass</div><div class="line">* @param id</div><div class="line">* @return</div><div class="line">*/</div><div class="line">public T findById(Class&lt;T&gt; entityClass,ID id);</div><div class="line"></div><div class="line">/**</div><div class="line">* 查询指定HQL语句，并返回集合</div><div class="line">* @param hql	指定的HQL语句</div><div class="line">* @param values	可变参数集合</div><div class="line">* @return</div><div class="line">*/</div><div class="line">public List&lt;Object&gt; find(String hql,Object...values);</div><div class="line"></div><div class="line">/**</div><div class="line">* 按照HQL语句查询唯一对象</div><div class="line">* @param hql	HQL语句</div><div class="line">* @param values	可变参数集合</div><div class="line">* @return	Object对象</div><div class="line">*/</div><div class="line">public Object findUnique(final String hql,final Object...values);</div><div class="line"></div><div class="line">/**</div><div class="line">* 查找指定HQL并返回int型</div><div class="line">* @param hql	hql语句</div><div class="line">* @param values	可变参数集合</div><div class="line">* @return	int类型</div><div class="line">*/</div><div class="line">public int findInt(final String hql,final Object...values);</div><div class="line"></div><div class="line">/**</div><div class="line">* 获取指定实体Class指定条件记录总数</div><div class="line">* @param entityClass	实体Class</div><div class="line">* @param where	HQL查询条件，支持参数列表</div><div class="line">* @param values	可变参数列表</div><div class="line">* @return	记录总数</div><div class="line">*/</div><div class="line">public int findTotalCount(Class&lt;T&gt; entityClass,final String where,final Object...values);</div><div class="line"></div><div class="line">/**</div><div class="line">* 获取指定实体Class的记录总数</div><div class="line">* @param entityClass	实体Class</div><div class="line">* @return	记录总数</div><div class="line">*/</div><div class="line">public int findTotalCount(Class&lt;T&gt; entityClass);</div><div class="line"></div><div class="line">/**</div><div class="line">* 查找指定属性的实体集合</div><div class="line">* @param entityClass	实体Class</div><div class="line">* @param propertyName	属性名</div><div class="line">* @param value	条件</div><div class="line">* @return	实体集合</div><div class="line">*/</div><div class="line">public List&lt;T&gt; findByPropertiy(Class&lt;T&gt; entityClass,String propertyName,Object value);</div><div class="line"></div><div class="line">/**</div><div class="line">* 分页查询</div><div class="line">* @param entityClass</div><div class="line">* @param hql</div><div class="line">* @param start</div><div class="line">* @param pagesize</div><div class="line">* @param values</div><div class="line">* @return</div><div class="line">*/</div><div class="line">public List&lt;T&gt; findByPage(final Class&lt;T&gt; entityClass,final String hql,final int start,final int pagesize,final Object...values);</div><div class="line"></div><div class="line">/**</div><div class="line">* 根据查询条件与参数列表创建Query对象</div><div class="line">* @param session</div><div class="line">* @param hql</div><div class="line">* @param values</div><div class="line">* @return</div><div class="line">*/</div><div class="line">public Query createQuery(Session session,String hql,Object...values);</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="通用DAO的实现类"><a href="#通用DAO的实现类" class="headerlink" title="通用DAO的实现类"></a>通用DAO的实现类</h2><p><strong>代码清单2：GeneralHibernateDaoImpl.java</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div></pre></td><td class="code"><pre><div class="line">public class GeneralHibernateDaoImpl&lt;T,ID extends Serializable&gt; extends HibernateDaoSupport implements GeneralHibernateDao&lt;T, ID&gt;&#123;</div><div class="line"></div><div class="line">private Class&lt;T&gt; entityClass;</div><div class="line"></div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">public GeneralHibernateDaoImpl() &#123;</div><div class="line">this.entityClass = null;</div><div class="line">@SuppressWarnings(&quot;rawtypes&quot;)</div><div class="line">Class c = getClass();</div><div class="line">Type type = c.getGenericSuperclass();</div><div class="line">if(type instanceof ParameterizedType)&#123;</div><div class="line">Type[] types = ((ParameterizedType)type).getActualTypeArguments();</div><div class="line">entityClass = (Class&lt;T&gt;)types[0];</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line">/* (non-Javadoc)kj</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#save(java.lang.Object)</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public void save(T entity) &#123;</div><div class="line">try &#123;</div><div class="line">this.getHibernateTemplate().save(entity);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;保存实体异常&quot;+entity.getClass().getName(),e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#delete(java.lang.Object)</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public void delete(T entity) &#123;</div><div class="line">try &#123;</div><div class="line">this.getHibernateTemplate().delete(entity);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;删除实体类：&quot;+entity.getClass().getName()+&quot;发生异常&quot;, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findAll(java.lang.Class)</div><div class="line">*/</div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">@Override</div><div class="line">public List&lt;T&gt; findAll(Class&lt;T&gt; entityClass) &#123;</div><div class="line">try &#123;</div><div class="line">return this.getHibernateTemplate().find(&quot;from &quot;+entityClass.getName());</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查找指定实体集合异常，实体&quot;+entityClass.getName(), e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#saveOrUpdate(java.lang.Object)</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public void saveOrUpdate(T entity) &#123;</div><div class="line">try &#123;</div><div class="line">this.getHibernateTemplate().saveOrUpdate(entity);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;更新或保存实体：&quot;+entity.getClass().getName()+&quot;发生异常&quot;, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findById(java.lang.Class, java.io.Serializable)</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public T findById(Class&lt;T&gt; entityClass, ID id) &#123;</div><div class="line">try &#123;</div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">T t = (T)this.getHibernateTemplate().get(entityClass.getName(), id);</div><div class="line">return t;</div><div class="line">&#125; catch (Exception e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查找指定ID实体：&quot;+entityClass.getName()+&quot;异常&quot;, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#find(java.lang.String, java.lang.Object[])</div><div class="line">*/</div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">@Override</div><div class="line">public List&lt;Object&gt; find(String hql, Object... values) &#123;</div><div class="line">try &#123;</div><div class="line">return this.getHibernateTemplate().find(hql, values);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查询指定HQL发生异常,HQL:&quot;+hql,e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findUnique(java.lang.String, java.lang.Object[])</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public Object findUnique(final String hql, final Object... values) &#123;</div><div class="line">try &#123;</div><div class="line">return this.getHibernateTemplate().execute(new HibernateCallback&lt;Object&gt;() &#123;</div><div class="line">@Override</div><div class="line">public Object doInHibernate(Session session) throws HibernateException, SQLException &#123;</div><div class="line">Query query = createQuery(session, hql, values);</div><div class="line">return query.uniqueResult();</div><div class="line">&#125;</div><div class="line">&#125;);</div><div class="line">&#125; catch (DataAccessException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查询指定HQL异常，HQL:&quot;+hql, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findInt(java.lang.String, java.lang.Object[])</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public int findInt(String hql, Object... values) &#123;</div><div class="line">try &#123;</div><div class="line">int num = 0;</div><div class="line">Object obj = findUnique(hql, values);</div><div class="line">if(obj!=null)&#123;</div><div class="line">num = Integer.parseInt(String.valueOf(obj));</div><div class="line">&#125;</div><div class="line">return num;</div><div class="line">&#125; catch (NumberFormatException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;数据转换发生异常！&quot;, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findTotalCount(java.lang.Class, java.lang.String, java.lang.Object[])</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public int findTotalCount(Class&lt;T&gt; entityClass, String where, Object... values) &#123;</div><div class="line">String hql = &quot;select count(e) from &quot;+entityClass.getName()+&quot; as e &quot;+where;</div><div class="line">return this.findInt(hql, values);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findTotalCount(java.lang.Class)</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public int findTotalCount(Class&lt;T&gt; entityClass) &#123;</div><div class="line">String hql = &quot;select count(e) from &quot;+entityClass.getName()+ &quot; as e&quot;;</div><div class="line">return this.findInt(hql,&quot;&quot;);</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findByPropertiy(java.lang.Class, java.lang.String, java.lang.Object)</div><div class="line">*/</div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">@Override</div><div class="line">public List&lt;T&gt; findByPropertiy(Class&lt;T&gt; entityClass, String propertyName, Object value) &#123;</div><div class="line">try &#123;</div><div class="line">String hql = &quot;from &quot;+entityClass.getName()+&quot; as model where model.&quot;+propertyName+&quot;=?&quot;;</div><div class="line">return this.getHibernateTemplate().find(hql, value);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查找指定条件集合异常，条件：&quot;+propertyName+&quot;=&quot;+value, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#findByPage(java.lang.Class, java.lang.String, int, int, java.lang.Object[])</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public List&lt;T&gt; findByPage(Class&lt;T&gt; entityClass, final String hql, final int start, final int pagesize, final Object... values) &#123;</div><div class="line">try &#123;</div><div class="line">return this.getHibernateTemplate().execute(new HibernateCallback&lt;List&lt;T&gt;&gt;() &#123;</div><div class="line">@SuppressWarnings(&quot;unchecked&quot;)</div><div class="line">@Override</div><div class="line">public List&lt;T&gt; doInHibernate(Session session) throws HibernateException, SQLException &#123;</div><div class="line">Query query = createQuery(session, hql, values);</div><div class="line">query.setFirstResult(start);</div><div class="line">query.setMaxResults(pagesize);</div><div class="line">return query.list();</div><div class="line">&#125;</div><div class="line">&#125;);</div><div class="line">&#125; catch (RuntimeException e) &#123;</div><div class="line">throw new TaoliyunException(&quot;查找指定HQL分页异常，HQL:&quot;+hql, e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">/* (non-Javadoc)</div><div class="line">* @see com.taoliyun.commons.generaldao.GeneralHibernateDao#createQuery(org.hibernate.Session, java.lang.String, java.lang.Object[])</div><div class="line">*/</div><div class="line">@Override</div><div class="line">public Query createQuery(Session session, String hql, Object... values) &#123;</div><div class="line">Query query = session.createQuery(hql);</div><div class="line">if(values!=null)&#123;</div><div class="line">for(int i=0;i&lt;values.length;i++)&#123;</div><div class="line">query.setParameter(i, values[i]);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">return query;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="技术总结"><a href="#技术总结" class="headerlink" title="技术总结"></a>技术总结</h2><p>首先分析DAO模式中的每一部分</p>
+<ol>
+<li><p>VO（对象实体）<br>这个类成员变量与数据库中每个字段一一对应，同时提供了相应是set和get方法来设置或取得数值。这个类一般是通过IDE自动生成的</p>
+</li>
+<li><p>DAO（数据访问接口）<br>这个是业务逻辑层使用数据持久化层服务的一个接口</p>
+</li>
+<li><p>DAOFactory（工厂类）<br>它提供了创建DAO类的一个方法，目的是更改数据持久化层实现时（比如更换数据库），不需要对业务逻辑层进行更改，只要再创建一个实现了DAO接口的类，再交给DAOFactory创建对象就可以了。为程序提供了更好的扩充性</p>
+</li>
+<li><p>DAOImpl（实现类）<br>这个类实现了DAO接口。同时也是代码最多的类。</p>
+</li>
+</ol>
+<p>从上文分析看出，抽象DAO首先要从实现类下手。在不同的表中，DAO提供的操作基本类似，所以实现类所实<br>现的方法基本相同，不同的地方主要有这样几个方面：</p>
+<ul>
+<li><p>传递的实体类类型</p>
+</li>
+<li><p>实体类的取值赋值方法</p>
+</li>
+<li><p>SQL语句</p>
+</li>
+</ul>
+<p>这些问题第一个解决起来最容易，可以通过Java的泛型解决。第三个也比较容易，可以在创建时传入字段，执行时生成SQL语句。只有第二个最困难，因为并不知道实体类提供哪些方法，以及方法的返回值和参数列表，怎么样去调用未知的方法。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/08/基于HibernateDaoSupport的泛型类DAO/">基于HibernateDaoSupport的泛型类DAO</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">RAMOSTEAR</a></p>
+        <p><span>发布时间:</span>2016-11-08, 11:40:42</p>
+        <p><span>最后更新:</span>2016-11-08, 12:05:03</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/08/基于HibernateDaoSupport的泛型类DAO/" title="基于HibernateDaoSupport的泛型类DAO">http://blog.ramostear.com/2016/11/08/基于HibernateDaoSupport的泛型类DAO/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://blog.ramostear.com/2016/11/08/基于HibernateDaoSupport的泛型类DAO/　　作者: RAMOSTEAR" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/08/技术领袖CTO/">
+                    技术领袖CTO
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#通用DAO接口定义"><span class="toc-number">1.1.</span> <span class="toc-text">通用DAO接口定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通用DAO的实现类"><span class="toc-number">1.2.</span> <span class="toc-text">通用DAO的实现类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#技术总结"><span class="toc-number">1.3.</span> <span class="toc-text">技术总结</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"基于HibernateDaoSupport的泛型类DAO　| Ramostear　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+      <div class="duoshuo" id="comments">
+    <div id="comment-box" ></div>
+    <div class="ds-thread" id="ds-thread" data-thread-key="2016/11/08/基于HibernateDaoSupport的泛型类DAO/" data-title="基于HibernateDaoSupport的泛型类DAO" data-url="http://blog.ramostear.com/2016/11/08/基于HibernateDaoSupport的泛型类DAO/"></div>
+    <script>
+        var duoshuoQuery = {short_name:"blogramostear"};
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+            s.async = true; s.charset = 'UTF-8';
+            (d.head || d.body).appendChild(s);
+        }
+
+        
+    </script>
+    
+    <script> loadComment(); </script>
+
+</div>
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/08/技术领袖CTO/" title="下一篇: 技术领袖CTO">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/基于HibernateDaoSupport的泛型类DAO/">基于HibernateDaoSupport的泛型类DAO</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/技术领袖CTO/">技术领袖CTO</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/02/SaaS-应用程序实例（java版）/">SaaS-应用程序实例（java版）</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/建立团队的12项法则/">建立团队的12项法则</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/系统分析实战技巧/">系统分析实战技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/The-JSP-specification-requires-that-an-attribute-name-is-preceded-by-whitespace/">The JSP specification requires that an attribute name is preceded by whitespace</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Java权限控制模型/">Java权限控制模型</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/OSGi入门知识梳理/">OSGi入门知识梳理</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于OSGi的Virgo环境搭建/">基于OSGi的Virgo环境搭建</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/maven的安装图文教程/">maven的安装图文教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/Maven-最佳实践之No-M2-HOME/">Maven 最佳实践之No M2_HOME</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/安装本地Jar包到Maven仓库/">安装本地Jar包到Maven仓库</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Laypage的java分页技术/">基于Laypage的java分页技术</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/基于Hibernate3的通用泛型公共DAO/">基于Hibernate3的通用泛型公共DAO</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Java中文件的解压缩操作/">Java中文件的解压缩操作</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/Hexo-Github搭建个人博客/">Hexo+Github搭建个人博客</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/30/双栏Blog主题使用/">双栏Blog主题使用</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                2016 RAMOSTEAR
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+    </div>
+    
+    <script src="/js/GithubRepoWidget.js"></script>
+
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+             github: ".github-widget a", 
+            
+            
+             tags: ".article-tag a", 
+             categories: ".article-category a, a.tag-list-link", 
+             articleNav: "#article-nav a, #post-nav-button a", 
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+    <script>
+        var originTitle = document.title;
+        var titleTime;
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden) {
+                document.title = "(つェ⊂) 我藏好了哦~ " + originTitle;
+                clearTimeout(titleTime);
+            }
+            else {
+                document.title = "(*´∇｀*) 被你发现啦~ " + originTitle;
+                titleTime = setTimeout(function() {
+                    document.title = originTitle;
+                }, 2000);
+            }
+        })
+    </script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
